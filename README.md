@@ -1,2 +1,2 @@
 # boids
-Flocking simulator based on Boids
+Flocking simulator based on [Boids](https://en.wikipedia.org/wiki/Boids)
