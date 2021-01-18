@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "build": "rimraf public/js/* && tsc"
+    "build": "rimraf public/js/* && tsc",
+    "watch": "tsc --watch"
   },
   "eslintConfig": {
     "extends": "airbnb-typescript/base",
@@ -11,6 +12,10 @@
     ],
     "parserOptions": {
       "project": "./tsconfig.json"
+    },
+    "rules": {
+      "max-len": "off",
+      "no-plusplus": "off"
     }
   },
   "devDependencies": {
