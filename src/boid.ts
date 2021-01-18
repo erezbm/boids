@@ -1,9 +1,19 @@
 import Vector from './vector.js';
 
 export default class Boid {
-  public radius = 2;
+  private static RADIUS = 2;
+
+  public radius = Boid.RADIUS;
 
   constructor(public x: number, public y: number) { }
+
+  static createInRandomPosition(width: number, height: number) {
+    const radius = Boid.RADIUS;
+    return new Boid(
+      radius + Math.random() * (width - 2 * radius),
+      radius + Math.random() * (height - 2 * radius),
+    );
+  }
 
   calcForce(boids: readonly Boid[], width: number, height: number): Vector {
     return { x: 0, y: 0 };

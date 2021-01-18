@@ -8,10 +8,10 @@ export default class Flock {
   }
 
   addBoids(num: number, width: number, height: number) {
-    this.boids = [...this.boids, ...Array.from({ length: num }, () => new Boid(
-      (Math.random() - 0.5) * width,
-      (Math.random() - 0.5) * height,
-    ))];
+    this.boids = [
+      ...this.boids,
+      ...Array.from({ length: num }, () => Boid.createInRandomPosition(width, height)),
+    ];
   }
 
   removeBoids(num: number) {
@@ -24,13 +24,7 @@ export default class Flock {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    const { width, height } = ctx.canvas;
-    ctx.save();
-    ctx.translate(width / 2, height / 2);
-
     ctx.fillStyle = 'blue';
     this.boids.forEach((boid) => boid.draw(ctx));
-
-    ctx.restore();
   }
 }
