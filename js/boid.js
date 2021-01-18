@@ -2,7 +2,11 @@ export default class Boid {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.radius = 2;
+        this.radius = Boid.RADIUS;
+    }
+    static createInRandomPosition(width, height) {
+        const radius = Boid.RADIUS;
+        return new Boid(radius + Math.random() * (width - 2 * radius), radius + Math.random() * (height - 2 * radius));
     }
     calcForce(boids, width, height) {
         return { x: 0, y: 0 };
@@ -15,3 +19,4 @@ export default class Boid {
         ctx.fill();
     }
 }
+Boid.RADIUS = 2;
