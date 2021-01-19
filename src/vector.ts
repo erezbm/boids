@@ -15,10 +15,6 @@ export default class Vector {
 
   magLessThan(m: number) { return this.magSquared() <= m * m; }
 
-  withMag(newMag: number) { return this.mult(newMag / this.mag()); }
-
-  limitMag(limit: number) { return this.magSquared() > limit ** 2 ? this.withMag(limit) : this; }
-
   dist(v: Vector) { return this.sub(v).mag(); }
 
   distLessThan(v: Vector, distance: number) { return this.sub(v).magLessThan(distance); }

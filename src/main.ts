@@ -1,4 +1,7 @@
+import Border from './border.js';
+import flags from './flags.js';
 import Flock from './flock.js';
+import Vector from './vector.js';
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
@@ -11,11 +14,30 @@ updateCanvasSize();
 window.addEventListener('resize', updateCanvasSize);
 
 const flock = new Flock(20, canvas.width, canvas.height);
+const borders = [
+  new Border(new Vector(1, 0), (p, r) => p.x - r), // Left border
+  new Border(new Vector(0, 1), (p, r) => p.y - r), // Upper border
+  new Border(new Vector(-1, 0), (p, r) => canvas.width - (p.x + r)), // Right border
+  new Border(new Vector(0, -1), (p, r) => canvas.height - (p.y + r)), // Lower border
+] as const;
 
 const updateAndDraw = (dt: number) => {
+  const { width, height } = canvas;
+
   ctx.fillStyle = '#222';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  flock.update(dt, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, width, height);
+
+  if (flags.debug) {
+    ctx.strokeStyle = 'yellow';
+    ctx.strokeRect(
+      Border.maxDistance,
+      Border.maxDistance,
+      width - 2 * Border.maxDistance,
+      height - 2 * Border.maxDistance,
+    );
+  }
+
+  flock.update(dt, borders);
   flock.draw(ctx);
 };
 

@@ -1,11 +1,9 @@
+import Border from './border.js';
 import flags from './flags.js';
-import { clamp, mapRange } from './utils.js';
 import Vector from './vector.js';
 
-type Force = Vector;
-
 export default class Boid {
-  private static maxForce = 50;
+  private static maxForce = 10;
   private static radius = 5;
   private static viewDistance = 50;
 
@@ -21,45 +19,36 @@ export default class Boid {
     return new Boid(Vector.randomInRect(Boid.radius, Boid.radius, width - 2 * Boid.radius, height - 2 * Boid.radius));
   }
 
-  calcNetForce(boids: readonly Boid[], width: number, height: number): Force {
+  calcNetForce(boids: readonly Boid[], borders: readonly Border[]) {
     const boidsInView = boids.filter((boid) => this.position.distLessThan(boid.position, this.viewDistance));
 
     const seperationForce = this.calcSeperationForce(boidsInView);
     const alignmentForce = this.calcAlignmentForce(boidsInView);
     const cohesionForce = this.calcCohesionForce(boidsInView);
-    const bordersForce = this.calcBordersForce(width, height);
+    const bordersForce = this.calcBordersForce(borders);
 
     return seperationForce.add(alignmentForce).add(cohesionForce).add(bordersForce);
   }
 
-  private calcSeperationForce(boidsInView: Boid[]): Force {
+  private calcSeperationForce(boidsInView: Boid[]) {
     return new Vector();
   }
 
-  private calcAlignmentForce(boidsInView: Boid[]): Force {
+  private calcAlignmentForce(boidsInView: Boid[]) {
     return new Vector();
   }
 
-  private calcCohesionForce(boidsInView: Boid[]): Force {
+  private calcCohesionForce(boidsInView: Boid[]) {
     return new Vector();
   }
 
-  private calcBordersForce(width: number, height: number): Force {
-    const margin = 50;
-    const bordersStuff = [
-      { normalDirection: new Vector(1, 0), distance: this.position.x - this.radius },
-      { normalDirection: new Vector(0, 1), distance: this.position.y - this.radius },
-      { normalDirection: new Vector(-1, 0), distance: width - (this.position.x + this.radius) },
-      { normalDirection: new Vector(0, -1), distance: height - (this.position.y + this.radius) },
-    ];
-    return bordersStuff
-      .map(({ normalDirection, distance }) => normalDirection.withMag(
-        mapRange(clamp(distance, 0, margin), 0, margin, Boid.maxForce, 0),
-      ))
+  private calcBordersForce(borders: readonly Border[]) {
+    return borders
+      .map((border) => border.calcNormalForce(this.position, this.radius))
       .reduce((sum, current) => sum.add(current));
   }
 
-  update(netForce: Force, dt: number) {
+  update(netForce: Vector, dt: number) {
     this.acceleration = netForce;
     // Move according to linear motion
     const finalVelocity = this.velocity.add(this.acceleration.mult(dt));
