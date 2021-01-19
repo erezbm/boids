@@ -19,8 +19,8 @@ export default class Flock {
   }
 
   update(dt: number, width: number, height: number) {
-    const forces = this.boids.map((boid) => boid.calcForce(this.boids, width, height));
-    this.boids.forEach((boid, i) => boid.update(forces[i], dt));
+    const netForces = this.boids.map((boid) => boid.calcNetForce(this.boids, width, height));
+    this.boids.forEach((boid, i) => boid.update(netForces[i], dt));
   }
 
   draw(ctx: CanvasRenderingContext2D) {

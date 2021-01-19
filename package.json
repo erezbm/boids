@@ -15,7 +15,14 @@
     },
     "rules": {
       "max-len": "off",
-      "no-plusplus": "off"
+      "no-plusplus": "off",
+      "@typescript-eslint/lines-between-class-members": [
+        "error",
+        "always",
+        {
+          "exceptAfterSingleLine": true
+        }
+      ]
     }
   },
   "devDependencies": {
