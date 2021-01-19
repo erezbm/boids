@@ -14,8 +14,8 @@ export default class Flock {
         this.boids.splice(this.boids.length - num, num);
     }
     update(dt, width, height) {
-        const forces = this.boids.map((boid) => boid.calcForce(this.boids, width, height));
-        this.boids.forEach((boid, i) => boid.update(forces[i], dt));
+        const netForces = this.boids.map((boid) => boid.calcNetForce(this.boids, width, height));
+        this.boids.forEach((boid, i) => boid.update(netForces[i], dt));
     }
     draw(ctx) {
         ctx.fillStyle = 'blue';
