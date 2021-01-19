@@ -1,5 +1,4 @@
 import flags from './flags.js';
-import { clamp, mapRange } from './utils.js';
 import Vector from './vector.js';
 export default class Boid {
     constructor(position) {
@@ -12,12 +11,12 @@ export default class Boid {
     static createInRandomPosition(width, height) {
         return new Boid(Vector.randomInRect(Boid.radius, Boid.radius, width - 2 * Boid.radius, height - 2 * Boid.radius));
     }
-    calcNetForce(boids, width, height) {
+    calcNetForce(boids, borders) {
         const boidsInView = boids.filter((boid) => this.position.distLessThan(boid.position, this.viewDistance));
         const seperationForce = this.calcSeperationForce(boidsInView);
         const alignmentForce = this.calcAlignmentForce(boidsInView);
         const cohesionForce = this.calcCohesionForce(boidsInView);
-        const bordersForce = this.calcBordersForce(width, height);
+        const bordersForce = this.calcBordersForce(borders);
         return seperationForce.add(alignmentForce).add(cohesionForce).add(bordersForce);
     }
     calcSeperationForce(boidsInView) {
@@ -29,16 +28,9 @@ export default class Boid {
     calcCohesionForce(boidsInView) {
         return new Vector();
     }
-    calcBordersForce(width, height) {
-        const margin = 50;
-        const bordersStuff = [
-            { normalDirection: new Vector(1, 0), distance: this.position.x - this.radius },
-            { normalDirection: new Vector(0, 1), distance: this.position.y - this.radius },
-            { normalDirection: new Vector(-1, 0), distance: width - (this.position.x + this.radius) },
-            { normalDirection: new Vector(0, -1), distance: height - (this.position.y + this.radius) },
-        ];
-        return bordersStuff
-            .map(({ normalDirection, distance }) => normalDirection.withMag(mapRange(clamp(distance, 0, margin), 0, margin, Boid.maxForce, 0)))
+    calcBordersForce(borders) {
+        return borders
+            .map((border) => border.calcNormalForce(this.position, this.radius))
             .reduce((sum, current) => sum.add(current));
     }
     update(netForce, dt) {
@@ -64,6 +56,6 @@ export default class Boid {
         }
     }
 }
-Boid.maxForce = 50;
+Boid.maxForce = 10;
 Boid.radius = 5;
 Boid.viewDistance = 50;

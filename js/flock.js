@@ -13,8 +13,8 @@ export default class Flock {
     removeBoids(num) {
         this.boids.splice(this.boids.length - num, num);
     }
-    update(dt, width, height) {
-        const netForces = this.boids.map((boid) => boid.calcNetForce(this.boids, width, height));
+    update(dt, borders) {
+        const netForces = this.boids.map((boid) => boid.calcNetForce(this.boids, borders));
         this.boids.forEach((boid, i) => boid.update(netForces[i], dt));
     }
     draw(ctx) {

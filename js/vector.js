@@ -10,8 +10,6 @@ export default class Vector {
     mag() { return Math.sqrt(this.magSquared()); }
     magSquared() { return this.x * this.x + this.y * this.y; }
     magLessThan(m) { return this.magSquared() <= m * m; }
-    withMag(newMag) { return this.mult(newMag / this.mag()); }
-    limitMag(limit) { return this.magSquared() > limit ** 2 ? this.withMag(limit) : this; }
     dist(v) { return this.sub(v).mag(); }
     distLessThan(v, distance) { return this.sub(v).magLessThan(distance); }
     static randomInRect(x, y, width, height) {
