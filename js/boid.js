@@ -1,4 +1,5 @@
 import flags from './flags.js';
+import { toRadians } from './utils.js';
 import Vector from './vector.js';
 export default class Boid {
     constructor(position) {
@@ -13,11 +14,17 @@ export default class Boid {
     }
     calcNetForce(boids, borders) {
         const boidsInView = boids.filter((boid) => this.position.distLessThan(boid.position, this.viewDistance));
-        const seperationForce = this.calcSeperationForce(boidsInView);
-        const alignmentForce = this.calcAlignmentForce(boidsInView);
-        const cohesionForce = this.calcCohesionForce(boidsInView);
-        const bordersForce = this.calcBordersForce(borders);
-        return seperationForce.add(alignmentForce).add(cohesionForce).add(bordersForce);
+        let netForce = Vector.zero;
+        if (boidsInView) {
+            netForce = netForce.add(this.calcSeperationForce(boidsInView));
+            netForce = netForce.add(this.calcAlignmentForce(boidsInView));
+            netForce = netForce.add(this.calcCohesionForce(boidsInView));
+        }
+        else {
+            netForce = netForce.add(this.calcRandomSteerForce());
+        }
+        netForce = netForce.add(this.calcBordersForce(borders));
+        return netForce;
     }
     calcSeperationForce(boidsInView) {
         return new Vector();
@@ -26,6 +33,9 @@ export default class Boid {
         return new Vector();
     }
     calcCohesionForce(boidsInView) {
+        return new Vector();
+    }
+    calcRandomSteerForce() {
         return new Vector();
     }
     calcBordersForce(borders) {
@@ -43,19 +53,28 @@ export default class Boid {
         this.position = this.position.add(displacement);
     }
     draw(ctx) {
+        ctx.strokeStyle = '#1D2';
+        ctx.lineWidth = 1;
+        ctx.save();
+        ctx.translate(this.position.x, this.position.y);
+        ctx.rotate(this.velocity.angle());
         ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = 'red';
-        ctx.fill();
+        ctx.moveTo(this.radius, 0);
+        const angle = toRadians(150);
+        ctx.lineTo(Math.cos(angle) * this.radius, -Math.sin(angle) * this.radius);
+        ctx.lineTo(Math.cos(-angle) * this.radius, -Math.sin(-angle) * this.radius);
+        ctx.closePath();
+        ctx.restore();
+        ctx.stroke();
         if (flags.debug) {
+            ctx.strokeStyle = 'yellow';
+            ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.arc(this.position.x, this.position.y, this.viewDistance, 0, 2 * Math.PI);
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'yellow';
             ctx.stroke();
         }
     }
 }
+Boid.radius = 10;
 Boid.maxForce = 10;
-Boid.radius = 5;
 Boid.viewDistance = 50;

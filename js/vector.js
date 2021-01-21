@@ -12,7 +12,9 @@ export default class Vector {
     magLessThan(m) { return this.magSquared() <= m * m; }
     dist(v) { return this.sub(v).mag(); }
     distLessThan(v, distance) { return this.sub(v).magLessThan(distance); }
+    angle() { return Math.atan2(this.y, this.x); }
     static randomInRect(x, y, width, height) {
         return new Vector(x + Math.random() * width, y + Math.random() * height);
     }
 }
+Vector.zero = new Vector(0, 0);
