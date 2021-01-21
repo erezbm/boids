@@ -1,4 +1,6 @@
 export default class Vector {
+  static readonly zero = new Vector(0, 0);
+
   constructor(public readonly x = 0, public readonly y = 0) { }
 
   add(v: Vector) { return new Vector(this.x + v.x, this.y + v.y); }
@@ -18,6 +20,8 @@ export default class Vector {
   dist(v: Vector) { return this.sub(v).mag(); }
 
   distLessThan(v: Vector, distance: number) { return this.sub(v).magLessThan(distance); }
+
+  angle() { return Math.atan2(this.y, this.x); }
 
   static randomInRect(x: number, y: number, width: number, height: number) {
     return new Vector(x + Math.random() * width, y + Math.random() * height);
