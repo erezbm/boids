@@ -16,6 +16,10 @@
     "rules": {
       "max-len": "off",
       "no-plusplus": "off",
+      "no-nested-ternary": "off",
+      "object-curly-newline": "off",
+      "no-mixed-operators": "off",
+      "@typescript-eslint/no-use-before-define": "off",
       "@typescript-eslint/lines-between-class-members": [
         "error",
         "always",

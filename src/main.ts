@@ -1,44 +1,34 @@
-import Border from './border.js';
+import RectBorders from './borders.js';
 import flags from './flags.js';
 import Flock from './flock.js';
-import Vector from './vector.js';
+import Rectangle from './rectangle.js';
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d')!;
+[canvas.width, canvas.height] = [window.innerWidth, window.innerHeight];
 
-const updateCanvasSize = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-};
-updateCanvasSize();
-window.addEventListener('resize', updateCanvasSize);
+window.addEventListener('resize', () => {
+  [canvas.width, canvas.height] = [window.innerWidth, window.innerHeight];
+  borders.setSize(canvas.width, canvas.height);
+});
 
-const flock = new Flock(20, canvas.width, canvas.height);
-const borders = [
-  new Border(new Vector(1, 0), (p, r) => p.x - r), // Left border
-  new Border(new Vector(0, 1), (p, r) => p.y - r), // Upper border
-  new Border(new Vector(-1, 0), (p, r) => canvas.width - (p.x + r)), // Right border
-  new Border(new Vector(0, -1), (p, r) => canvas.height - (p.y + r)), // Lower border
-] as const;
+const spaceRect = new Rectangle(0, 0, canvas.width, canvas.height);
+const borders = new RectBorders(spaceRect);
+const flock = new Flock(20, borders);
 
+const context = canvas.getContext('2d')!;
 const updateAndDraw = (dt: number) => {
-  const { width, height } = canvas;
-
-  ctx.fillStyle = '#222';
-  ctx.fillRect(0, 0, width, height);
-
-  if (flags.debug) {
-    ctx.strokeStyle = 'yellow';
-    ctx.strokeRect(
-      Border.maxDistance,
-      Border.maxDistance,
-      width - 2 * Border.maxDistance,
-      height - 2 * Border.maxDistance,
-    );
-  }
-
   flock.update(dt, borders);
-  flock.draw(ctx);
+
+  drawBackground(context);
+  if (flags.debug) {
+    borders.draw(context);
+  }
+  flock.draw(context);
+};
+
+const drawBackground = (ctx: CanvasRenderingContext2D) => {
+  ctx.fillStyle = '#222';
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 };
 
 let lastTime = performance.now();

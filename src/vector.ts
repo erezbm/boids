@@ -1,3 +1,5 @@
+import Rectangle from './rectangle.js';
+
 export default class Vector {
   static readonly zero = new Vector(0, 0);
 
@@ -13,17 +15,33 @@ export default class Vector {
 
   mag() { return Math.sqrt(this.magSquared()); }
 
-  private magSquared() { return this.x * this.x + this.y * this.y; }
+  magSquared() { return this.x * this.x + this.y * this.y; }
 
-  magLessThan(m: number) { return this.magSquared() <= m * m; }
+  magLT(m: number) { return this.magSquared() < m ** 2; }
+  magLTE(m: number) { return this.magSquared() <= m ** 2; }
+  magGT(m: number) { return !this.magLTE(m); }
+  magGTE(m: number) { return !this.magLT(m); }
+
+  withMag(m: number) { return this.mult(m / (this.mag() || 1)); }
+
+  limitMag(m: number) { return this.magLTE(m) ? this : this.withMag(m); }
 
   dist(v: Vector) { return this.sub(v).mag(); }
 
-  distLessThan(v: Vector, distance: number) { return this.sub(v).magLessThan(distance); }
+  distLT(v: Vector, distance: number) { return this.sub(v).magLT(distance); }
+  distLTE(v: Vector, distance: number) { return this.sub(v).magLTE(distance); }
+  distGT(v: Vector, distance: number) { return !this.distLTE(v, distance); }
+  distGTE(v: Vector, distance: number) { return !this.distLT(v, distance); }
 
   angle() { return Math.atan2(this.y, this.x); }
 
-  static randomInRect(x: number, y: number, width: number, height: number) {
+  static fromAngle(angle: number) { return new Vector(Math.cos(angle), Math.sin(angle)); }
+
+  static randomInRect({ x, y, width, height }: Rectangle) {
     return new Vector(x + Math.random() * width, y + Math.random() * height);
   }
+
+  static randomUnit() { return Vector.fromAngle(Math.random() * (2 * Math.PI)); }
+
+  static randomMag(m: number) { return Vector.randomUnit().mult(m); }
 }

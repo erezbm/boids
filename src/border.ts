@@ -1,15 +1,15 @@
+import Boid from './boid.js';
 import { clamp, mapRange } from './utils.js';
 import Vector from './vector.js';
 
 export default class Border {
-  public static maxDistance = 100;
-  private static maxForce = 50;
+  public static maxForce = Boid.maxForce * 2;
 
-  constructor(private unitNormalForce: Vector, private distanceFn: (p: Vector, r: number) => number) { }
+  constructor(private unitNormalForce: Vector, private maxEffectDistance: number, private distanceFn: (p: Vector, r: number) => number) { }
 
-  calcNormalForce(p: Vector, r: number) {
-    const clampedDistance = clamp(this.distanceFn(p, r), 0, Border.maxDistance);
-    const mag = mapRange(clampedDistance, 0, Border.maxDistance, Border.maxForce, 0);
+  calcNormalForce(position: Vector, radius: number) {
+    const clampedDistance = clamp(this.distanceFn(position, radius), 0, this.maxEffectDistance);
+    const mag = mapRange(clampedDistance, 0, this.maxEffectDistance, Border.maxForce, 0);
     return this.unitNormalForce.mult(mag);
   }
 }

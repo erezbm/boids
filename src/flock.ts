@@ -1,26 +1,26 @@
 import Boid from './boid.js';
-import Border from './border.js';
+import RectBorders from './borders.js';
 
 export default class Flock {
   private boids: Boid[] = [];
 
-  constructor(numBoids: number, width: number, height: number) {
-    this.addBoids(numBoids, width, height);
+  constructor(numBoids: number, borders: RectBorders) {
+    this.addBoids(numBoids, borders);
   }
 
-  addBoids(num: number, width: number, height: number) {
+  addBoids(amount: number, borders: RectBorders) {
     this.boids = [
       ...this.boids,
-      ...Array.from({ length: num }, () => Boid.createInRandomPosition(width, height)),
+      ...Array.from({ length: amount }, () => Boid.createInRandomPosition(borders)),
     ];
   }
 
-  removeBoids(num: number) {
-    this.boids.splice(this.boids.length - num, num);
+  removeBoids(amount: number) {
+    this.boids.splice(this.boids.length - amount, amount);
   }
 
-  update(dt: number, borders: readonly Border[]) {
-    const netForces = this.boids.map((boid) => boid.calcNetForce(this.boids, borders));
+  update(dt: number, borders: RectBorders) {
+    const netForces = this.boids.map((boid) => boid.calcNetForce(dt, this.boids, borders));
     this.boids.forEach((boid, i) => boid.update(netForces[i], dt));
   }
 
