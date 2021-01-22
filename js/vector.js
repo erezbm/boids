@@ -9,12 +9,23 @@ export default class Vector {
     div(n) { return this.mult(1 / n); }
     mag() { return Math.sqrt(this.magSquared()); }
     magSquared() { return this.x * this.x + this.y * this.y; }
-    magLessThan(m) { return this.magSquared() <= m * m; }
+    magLT(m) { return this.magSquared() < m ** 2; }
+    magLTE(m) { return this.magSquared() <= m ** 2; }
+    magGT(m) { return !this.magLTE(m); }
+    magGTE(m) { return !this.magLT(m); }
+    withMag(m) { return this.mult(m / (this.mag() || 1)); }
+    limitMag(m) { return this.magLTE(m) ? this : this.withMag(m); }
     dist(v) { return this.sub(v).mag(); }
-    distLessThan(v, distance) { return this.sub(v).magLessThan(distance); }
+    distLT(v, distance) { return this.sub(v).magLT(distance); }
+    distLTE(v, distance) { return this.sub(v).magLTE(distance); }
+    distGT(v, distance) { return !this.distLTE(v, distance); }
+    distGTE(v, distance) { return !this.distLT(v, distance); }
     angle() { return Math.atan2(this.y, this.x); }
-    static randomInRect(x, y, width, height) {
+    static fromAngle(angle) { return new Vector(Math.cos(angle), Math.sin(angle)); }
+    static randomInRect({ x, y, width, height }) {
         return new Vector(x + Math.random() * width, y + Math.random() * height);
     }
+    static randomUnit() { return Vector.fromAngle(Math.random() * (2 * Math.PI)); }
+    static randomMag(m) { return Vector.randomUnit().mult(m); }
 }
 Vector.zero = new Vector(0, 0);

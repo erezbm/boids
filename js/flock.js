@@ -1,20 +1,20 @@
 import Boid from './boid.js';
 export default class Flock {
-    constructor(numBoids, width, height) {
+    constructor(numBoids, borders) {
         this.boids = [];
-        this.addBoids(numBoids, width, height);
+        this.addBoids(numBoids, borders);
     }
-    addBoids(num, width, height) {
+    addBoids(amount, borders) {
         this.boids = [
             ...this.boids,
-            ...Array.from({ length: num }, () => Boid.createInRandomPosition(width, height)),
+            ...Array.from({ length: amount }, () => Boid.createInRandomPosition(borders)),
         ];
     }
-    removeBoids(num) {
-        this.boids.splice(this.boids.length - num, num);
+    removeBoids(amount) {
+        this.boids.splice(this.boids.length - amount, amount);
     }
     update(dt, borders) {
-        const netForces = this.boids.map((boid) => boid.calcNetForce(this.boids, borders));
+        const netForces = this.boids.map((boid) => boid.calcNetForce(dt, this.boids, borders));
         this.boids.forEach((boid, i) => boid.update(netForces[i], dt));
     }
     draw(ctx) {

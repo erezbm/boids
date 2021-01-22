@@ -1,14 +1,15 @@
+import Boid from './boid.js';
 import { clamp, mapRange } from './utils.js';
 export default class Border {
-    constructor(unitNormalForce, distanceFn) {
+    constructor(unitNormalForce, maxEffectDistance, distanceFn) {
         this.unitNormalForce = unitNormalForce;
+        this.maxEffectDistance = maxEffectDistance;
         this.distanceFn = distanceFn;
     }
-    calcNormalForce(p, r) {
-        const clampedDistance = clamp(this.distanceFn(p, r), 0, Border.maxDistance);
-        const mag = mapRange(clampedDistance, 0, Border.maxDistance, Border.maxForce, 0);
+    calcNormalForce(position, radius) {
+        const clampedDistance = clamp(this.distanceFn(position, radius), 0, this.maxEffectDistance);
+        const mag = mapRange(clampedDistance, 0, this.maxEffectDistance, Border.maxForce, 0);
         return this.unitNormalForce.mult(mag);
     }
 }
-Border.maxDistance = 100;
-Border.maxForce = 50;
+Border.maxForce = Boid.maxForce * 2;
