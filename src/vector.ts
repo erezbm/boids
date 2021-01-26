@@ -5,6 +5,16 @@ export default class Vector {
 
   constructor(public readonly x = 0, public readonly y = 0) { }
 
+  static fromAngle(angle: number) { return new Vector(Math.cos(angle), Math.sin(angle)); }
+
+  static randomInRect({ x, y, width, height }: Rectangle) {
+    return new Vector(x + Math.random() * width, y + Math.random() * height);
+  }
+
+  static randomUnit() { return Vector.fromAngle(Math.random() * (2 * Math.PI)); }
+
+  static randomMag(m: number) { return Vector.randomUnit().mult(m); }
+
   add(v: Vector) { return new Vector(this.x + v.x, this.y + v.y); }
 
   sub(v: Vector) { return this.add(v.mult(-1)); }
@@ -26,6 +36,8 @@ export default class Vector {
 
   limitMag(m: number) { return this.magLTE(m) ? this : this.withMag(m); }
 
+  unit() { return this.withMag(1); }
+
   dist(v: Vector) { return this.sub(v).mag(); }
 
   distLT(v: Vector, distance: number) { return this.sub(v).magLT(distance); }
@@ -35,13 +47,7 @@ export default class Vector {
 
   angle() { return Math.atan2(this.y, this.x); }
 
-  static fromAngle(angle: number) { return new Vector(Math.cos(angle), Math.sin(angle)); }
+  static sum(vectors: readonly Vector[]) { return vectors.reduce((sum, current) => sum.add(current), Vector.zero); }
 
-  static randomInRect({ x, y, width, height }: Rectangle) {
-    return new Vector(x + Math.random() * width, y + Math.random() * height);
-  }
-
-  static randomUnit() { return Vector.fromAngle(Math.random() * (2 * Math.PI)); }
-
-  static randomMag(m: number) { return Vector.randomUnit().mult(m); }
+  static average(vectors: readonly Vector[]) { return Vector.sum(vectors).div(vectors.length); }
 }

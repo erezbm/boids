@@ -1,6 +1,6 @@
 import RectBorders from './borders.js';
 import flags from './flags.js';
-import { toRadians } from './utils.js';
+import { mapRange, toRadians } from './utils.js';
 import Vector from './vector.js';
 
 type CurrentSearch = null | {
@@ -16,12 +16,15 @@ export default class Boid {
   public static maxSpeed = 4 * 144;
   public static maxForce = 1 * Boid.maxSpeed;
 
-  public static viewDistance = 50;
+  public static viewDistance = 100;
 
   public static radius = 10;
 
   public acceleration = new Vector();
   public velocity = new Vector();
+
+  public static desiredFlockSpeed = Boid.maxSpeed / 2;
+  public static desiredSeparationDistance = Boid.viewDistance / 4;
 
   public static searchTargetRadius = 15;
   public static searchTime = 50;
@@ -43,34 +46,41 @@ export default class Boid {
     const seesBoids = boidsInView.length > 0;
     if (seesBoids) this.currentSearch = null;
 
-    return (seesBoids ? this.calcFlockForce(boidsInView) : this.calcSearchForce(dt, borders)).add(this.calcBordersForce(borders));
+    return (seesBoids ? this.calcFlockForce(boidsInView, dt) : this.calcSearchForce(dt, borders)).add(this.calcBordersForce(borders));
   }
 
-  private calcFlockForce(boidsInView: Boid[]) {
-    return this.calcSeperationForce(boidsInView)
-      .add(this.calcAlignmentForce(boidsInView))
-      .add(this.calcCohesionForce(boidsInView));
+  private calcFlockForce(boidsInView: Boid[], dt: number) {
+    return this.calcSeparationForce(boidsInView, dt)
+      .add(this.calcAlignmentForce(boidsInView, dt))
+      .add(this.calcCohesionForce(boidsInView, dt));
   }
 
-  private calcSeperationForce(boidsInView: Boid[]) {
-    return new Vector();
+  private calcSeparationForce(boidsInView: Boid[], dt: number) {
+    // NOTE probably can be improved
+    const d = Boid.desiredSeparationDistance;
+    const forces = boidsInView
+      .filter((other) => this.position.distLT(other.position, d))
+      .map((other) => this.position.sub(other.position)
+        .withMag(mapRange(this.position.dist(other.position), 0, d, Boid.maxForce, 0)));
+    return Vector.sum(forces).div(dt).limitMag(Boid.maxForce);
   }
 
-  private calcAlignmentForce(boidsInView: Boid[]) {
-    return new Vector();
+  private calcAlignmentForce(boidsInView: Boid[], dt: number) {
+    const averageHeading = Vector.sum(boidsInView.map((boid) => boid.velocity.unit()));
+    const desiredVelocity = averageHeading.withMag(Boid.desiredFlockSpeed);
+    return this.calcSteerForce(desiredVelocity, dt);
   }
 
-  private calcCohesionForce(boidsInView: Boid[]) {
-    return new Vector();
+  private calcCohesionForce(boidsInView: Boid[], dt: number) {
+    const averagePosition = Vector.average(boidsInView.map((boid) => boid.position));
+    return this.calcArriveForce(averagePosition, dt);
   }
 
   private calcSearchForce(dt: number, borders: RectBorders) {
-    if (!this.currentSearch) {
-      this.currentSearch = {
-        targetPosition: Vector.randomInRect(borders.getFreeZone()),
-        timeRemaining: Boid.searchTime,
-      };
-    }
+    this.currentSearch ??= {
+      targetPosition: Vector.randomInRect(borders.getFreeZone()),
+      timeRemaining: Boid.searchTime,
+    };
     return this.calcArriveForce(this.currentSearch.targetPosition, dt);
   }
 
@@ -78,17 +88,17 @@ export default class Boid {
     return borders.calcForce(this.position, Boid.radius);
   }
 
-  private calcArriveForce(target: Vector, dt: number) {
-    /* TODO adjust for 2d.
-     * currently this has the problem that it assumes you are in a straight line to the target,
-     * therefore it slows down before it actually should (lower maxForce to see (because its harder to turn)) */
-    const shouldSlow = this.position.distLTE(target, 0.5 * this.velocity.magSquared() / Boid.maxForce + Boid.maxSpeed * dt);
+  private calcArriveForce(targetPosition: Vector, dt: number) {
+    // TODO adjust for 2d
+    // currently this has the problem that it assumes you are in a straight line to the target,
+    // therefore it slows down before it actually should (lower maxForce to see (because its harder to turn))
+    const shouldSlow = this.position.distLTE(targetPosition, 0.5 * this.velocity.magSquared() / Boid.maxForce + Boid.maxSpeed * dt);
     this.debugInfo.slowing = shouldSlow;
     if (shouldSlow) {
-      const forceToApply = 0.5 * this.velocity.magSquared() / this.position.dist(target);
+      const forceToApply = 0.5 * this.velocity.magSquared() / this.position.dist(targetPosition);
       return this.velocity.withMag(-forceToApply).limitMag(Boid.maxForce);
     }
-    const desiredVelocity = target.sub(this.position).withMag(Boid.maxSpeed);
+    const desiredVelocity = targetPosition.sub(this.position).withMag(Boid.maxSpeed);
     return this.calcSteerForce(desiredVelocity, dt);
   }
 
