@@ -18,7 +18,7 @@ export default class Boid {
 
   public static viewDistance = 100;
 
-  public static radius = 10;
+  public static radius = 30;
 
   public acceleration = new Vector();
   public velocity = new Vector();
@@ -140,6 +140,11 @@ export default class Boid {
   private drawBody(ctx: CanvasRenderingContext2D) {
     ctx.strokeStyle = '#1D2';
     ctx.lineWidth = 1;
+
+    if (flags.image) {
+      ctx.drawImage(flags.image, this.position.x, this.position.y, 2 * Boid.radius, 2 * Boid.radius);
+      return;
+    }
 
     ctx.save();
     ctx.translate(this.position.x, this.position.y);

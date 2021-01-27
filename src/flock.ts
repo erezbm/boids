@@ -2,6 +2,7 @@ import Boid from './boid.js';
 import RectBorders from './borders.js';
 
 export default class Flock {
+  // TODO use a quadtree instead for performance
   private boids: Boid[] = [];
 
   constructor(numBoids: number, borders: RectBorders) {
