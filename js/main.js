@@ -11,7 +11,7 @@ window.addEventListener('resize', () => {
 flags.image.src = 'img/zaguri.png';
 const spaceRect = new Rectangle(0, 0, canvas.width, canvas.height);
 const borders = new RectBorders(spaceRect);
-const flock = new Flock(1000, borders);
+const flock = new Flock(500, borders);
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
 // TODO add sidebar with:
