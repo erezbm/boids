@@ -8,12 +8,16 @@ window.addEventListener('resize', () => {
     [canvas.width, canvas.height] = [window.innerWidth, window.innerHeight];
     borders.setSize(canvas.width, canvas.height);
 });
+flags.image.src = 'img/zaguri.png';
 const spaceRect = new Rectangle(0, 0, canvas.width, canvas.height);
 const borders = new RectBorders(spaceRect);
-const flock = new Flock(100, borders);
+const flock = new Flock(1000, borders);
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
-// TODO add checkboxes for the different debug draw functions
+// TODO add sidebar with:
+// - control for number of boids
+// - controls for the various parameters
+// - checkboxes for the different debug draw functions
 const context = canvas.getContext('2d');
 const updateAndDraw = (dt) => {
     flock.update(dt, borders);
@@ -24,6 +28,7 @@ const updateAndDraw = (dt) => {
     flock.draw(context);
 };
 const drawBackground = (ctx) => {
+    // ctx.fillStyle = '#2224';
     ctx.fillStyle = '#222';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 };

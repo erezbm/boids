@@ -1,6 +1,7 @@
 import Boid from './boid.js';
 export default class Flock {
     constructor(numBoids, borders) {
+        // TODO use a quadtree instead for performance
         this.boids = [];
         this.addBoids(numBoids, borders);
     }

@@ -101,6 +101,10 @@ export default class Boid {
     drawBody(ctx) {
         ctx.strokeStyle = '#1D2';
         ctx.lineWidth = 1;
+        if (flags.image) {
+            ctx.drawImage(flags.image, this.position.x, this.position.y, 2 * Boid.radius, 2 * Boid.radius);
+            return;
+        }
         ctx.save();
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(this.velocity.angle());
@@ -163,7 +167,7 @@ export default class Boid {
 Boid.maxSpeed = 4 * 144;
 Boid.maxForce = 1 * Boid.maxSpeed;
 Boid.viewDistance = 100;
-Boid.radius = 10;
+Boid.radius = 30;
 Boid.desiredFlockSpeed = Boid.maxSpeed / 2;
 Boid.desiredSeparationDistance = Boid.viewDistance / 4;
 Boid.searchTargetRadius = 15;
