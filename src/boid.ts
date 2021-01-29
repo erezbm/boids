@@ -142,7 +142,7 @@ export default class Boid {
     ctx.lineWidth = 1;
 
     if (flags.image) {
-      ctx.drawImage(flags.image, this.position.x, this.position.y, 2 * Boid.radius, 2 * Boid.radius);
+      ctx.drawImage(flags.image, this.position.x - Boid.radius, this.position.y - Boid.radius, 2 * Boid.radius, 2 * Boid.radius);
       return;
     }
 
