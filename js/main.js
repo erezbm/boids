@@ -15,8 +15,9 @@ const flock = new Flock(500, borders);
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
 // TODO add sidebar with:
-// - control for number of boids
-// - controls for the various parameters
+// - input for number of boids
+// - input for background transparency
+// - inputs for the various parameters
 // - checkboxes for the different debug draw functions
 const context = canvas.getContext('2d');
 const updateAndDraw = (dt) => {
