@@ -4,6 +4,33 @@ html, body {
   margin: 0;
 }
 
-#boids-canvas {
-  display: block;
+/* #region Dismissible drawer: below top app bar */
+body {
+  display: flex;
+  height: 100vh;
+}
+
+.mdc-drawer-app-content {
+  flex: auto;
+  overflow: auto;
+  position: relative;
+}
+
+.main-content {
+  overflow: auto;
+  height: 100%;
+}
+
+.app-bar {
+  position: absolute;
+}
+
+.mdc-top-app-bar {
+  z-index: 7;
+}
+/* #endregion */
+
+.main-content {
+  overflow: hidden;
+  background-color: #222;
 }

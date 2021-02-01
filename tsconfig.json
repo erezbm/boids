@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ES2015",
+    "moduleResolution": "Node",
     "outDir": "public/js/",
+    "skipLibCheck": true,
     "strict": true,
   },
   "include": [

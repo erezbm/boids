@@ -5,9 +5,14 @@ import Vector from './vector.js';
 export default class RectBorders {
   public static effectPadding = 50;
 
-  borders: readonly [Border, Border, Border, Border];
+  private spaceRect = Rectangle.zero;
 
-  constructor(private spaceRect: Rectangle) {
+  readonly borders: readonly [Border, Border, Border, Border];
+
+  constructor(space?: Rectangle | Element) {
+    if (space instanceof Rectangle) this.setSpaceFromRect(space);
+    else if (space instanceof Element) this.attachTo(space);
+
     this.borders = [
       new Border(new Vector(1, 0), RectBorders.effectPadding, (p, r) => (p.x - r) - this.spaceRect.x), // Left border
       new Border(new Vector(0, 1), RectBorders.effectPadding, (p, r) => (p.y - r) - this.spaceRect.y), // Upper border
@@ -16,8 +21,17 @@ export default class RectBorders {
     ] as const;
   }
 
-  setSize(width: number, height: number) {
-    this.spaceRect = this.spaceRect.withSize(width, height);
+  // TODO abstract figuring the space rect of the world into a mutable class and use it here and everywhere else
+  getSpaceRect() { return this.spaceRect; }
+  setSpaceFromRect(spaceRect: Rectangle) { this.spaceRect = spaceRect; }
+
+  attachTo(element: Element) {
+    const updateSpace = () => {
+      const { x, y, width, height } = element.getBoundingClientRect();
+      this.setSpaceFromRect(new Rectangle(x, y, width, height));
+    };
+    new ResizeObserver(updateSpace).observe(element);
+    updateSpace();
   }
 
   getFreeZone() { return this.spaceRect.withPadding(RectBorders.effectPadding); }

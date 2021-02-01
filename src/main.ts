@@ -1,20 +1,12 @@
 import RectBorders from './borders.js';
 import flags from './flags.js';
 import Flock from './flock.js';
-import Rectangle from './rectangle.js';
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
-[canvas.width, canvas.height] = [window.innerWidth, window.innerHeight];
-
-window.addEventListener('resize', () => {
-  [canvas.width, canvas.height] = [window.innerWidth, window.innerHeight];
-  borders.setSize(canvas.width, canvas.height);
-});
 
 flags.image.src = 'img/zaguri.png';
 
-const spaceRect = new Rectangle(0, 0, canvas.width, canvas.height);
-const borders = new RectBorders(spaceRect);
+const borders = new RectBorders(canvas);
 const flock = new Flock(500, borders);
 
 // TODO spawn boids on mouse drag
@@ -30,10 +22,14 @@ const updateAndDraw = (dt: number) => {
   flock.update(dt, borders);
 
   drawBackground(context);
+  context.save();
+  const { x, y } = borders.getSpaceRect();
+  context.translate(-x, -y);
   if (flags.debug) {
     borders.draw(context);
   }
   flock.draw(context);
+  context.restore();
 };
 
 const drawBackground = (ctx: CanvasRenderingContext2D) => {
