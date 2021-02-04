@@ -1,4 +1,4 @@
-import Vector from './vector.js';
+import Vector from './vector';
 
 export default class Rectangle {
   static readonly zero = new Rectangle(0, 0, 0, 0);

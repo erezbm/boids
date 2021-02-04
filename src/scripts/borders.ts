@@ -1,6 +1,6 @@
-import Border from './border.js';
-import Rectangle from './rectangle.js';
-import Vector from './vector.js';
+import Border from './border';
+import Rectangle from './rectangle';
+import Vector from './vector';
 
 export default class RectBorders {
   public static effectPadding = 50;

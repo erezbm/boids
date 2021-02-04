@@ -1,7 +1,7 @@
-import RectBorders from './borders.js';
-import flags from './flags.js';
-import { mapRange, toRadians } from './utils.js';
-import Vector from './vector.js';
+import RectBorders from './borders';
+import flags from './flags';
+import { mapRange, toRadians } from './utils';
+import Vector from './vector';
 
 type CurrentSearch = null | {
   targetPosition: Vector,

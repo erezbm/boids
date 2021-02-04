@@ -1,8 +1,9 @@
-import RectBorders from './borders.js';
-import flags from './flags.js';
-import Flock from './flock.js';
+import RectBorders from './borders';
+import flags from './flags';
+import Flock from './flock';
+import zaguriImage from '/images/zaguri.png';
 
-flags.image.src = 'images/zaguri.png';
+flags.image.src = zaguriImage;
 
 const borders = new RectBorders(document.getElementById('visible-space')!);
 const flock = new Flock(500, borders);

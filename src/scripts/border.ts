@@ -1,6 +1,6 @@
-import Boid from './boid.js';
-import { clamp, mapRange } from './utils.js';
-import Vector from './vector.js';
+import Boid from './boid';
+import { clamp, mapRange } from './utils';
+import Vector from './vector';
 
 export default class Border {
   public static maxForce = Boid.maxForce * 2;

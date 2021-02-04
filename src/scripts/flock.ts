@@ -1,5 +1,5 @@
-import Boid from './boid.js';
-import RectBorders from './borders.js';
+import Boid from './boid';
+import RectBorders from './borders';
 
 export default class Flock {
   // TODO use a quadtree instead for performance
