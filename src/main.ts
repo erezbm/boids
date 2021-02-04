@@ -4,7 +4,7 @@ import Flock from './flock.js';
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
 
-flags.image.src = 'img/zaguri.png';
+flags.image.src = 'images/zaguri.png';
 
 const borders = new RectBorders(canvas);
 const flock = new Flock(500, borders);

@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "ES2015",
     "moduleResolution": "Node",
-    "outDir": "public/js/",
+    "outDir": "public/scripts/",
     "skipLibCheck": true,
     "strict": true,
   },
