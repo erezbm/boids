@@ -1,0 +1,66 @@
+@use "@material/theme" with (
+  $primary: #616161,
+);
+@use '@material/drawer';
+@use '@material/list';
+@use '@material/icon-button';
+@use '@material/top-app-bar/mdc-top-app-bar';
+@use '@material/ripple';
+
+@include drawer.core-styles;
+@include drawer.dismissible-core-styles;
+@include drawer.modal-core-styles;
+@include list.core-styles;
+@include icon-button.core-styles;
+
+.mdc-list-item {
+  @include ripple.surface;
+  @include ripple.radius-bounded;
+  @include ripple.states;
+  overflow: hidden;
+}
+
+#boids-settings-btn {
+  @include ripple.surface;
+  @include ripple.radius-unbounded;
+  @include ripple.states;
+  overflow: visible;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+#boids-canvas-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+}
+
+.mdc-drawer-app-content {
+  flex: auto;
+}
+
+.mdc-top-app-bar {
+  position: absolute;
+}
+
+#visible-space {
+  height: 100%;
+}
+
+.mdc-drawer-app-content {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition: 250ms;
+}
+
+.mdc-drawer--closing + .mdc-drawer-app-content {
+  transition: 200ms;
+}

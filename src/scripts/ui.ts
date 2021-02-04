@@ -1,7 +1,12 @@
-mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar')!);
+import { MDCTopAppBar } from '@material/top-app-bar';
+import { MDCRipple } from '@material/ripple';
+import { MDCDrawer } from '@material/drawer';
+
+MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar')!);
 const settingsButton = document.getElementById('boids-settings-btn') as HTMLButtonElement;
-mdc.ripple.MDCRipple.attachTo(settingsButton);
-const settingsDrawer = mdc.drawer.MDCDrawer.attachTo(document.getElementById('boids-settings-drawer')!);
+MDCRipple.attachTo(settingsButton);
+const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-settings-drawer')!);
+settingsDrawer.list?.listElements.forEach((listElement) => MDCRipple.attachTo(listElement));
 
 settingsButton.addEventListener('click', () => {
   settingsDrawer.open = !settingsDrawer.open;

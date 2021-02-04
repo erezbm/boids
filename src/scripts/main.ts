@@ -8,8 +8,6 @@ flags.image.src = zaguriImage;
 const borders = new RectBorders(document.getElementById('visible-space')!);
 const flock = new Flock(500, borders);
 
-// TODO use parcel to bundle everything, so we can mdc's Sass and configure theme colors
-
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
 // TODO add sidebar with:
