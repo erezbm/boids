@@ -8,7 +8,7 @@ settingsButton.addEventListener('click', () => {
 });
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
-const mainContentEl = document.getElementById('main-content')!;
 new ResizeObserver(() => {
-  [canvas.width, canvas.height] = [mainContentEl.clientWidth, mainContentEl.clientHeight];
-}).observe(mainContentEl);
+  const { clientWidth, clientHeight } = document.documentElement;
+  [canvas.width, canvas.height] = [clientWidth, clientHeight];
+}).observe(document.documentElement);

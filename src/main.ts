@@ -2,12 +2,12 @@ import RectBorders from './borders.js';
 import flags from './flags.js';
 import Flock from './flock.js';
 
-const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
-
 flags.image.src = 'images/zaguri.png';
 
-const borders = new RectBorders(canvas);
+const borders = new RectBorders(document.getElementById('visible-space')!);
 const flock = new Flock(500, borders);
+
+// TODO use parcel to bundle everything, so we can mdc's Sass and configure theme colors
 
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
@@ -17,19 +17,16 @@ const flock = new Flock(500, borders);
 // - inputs for the various parameters
 // - checkboxes for the different debug draw functions
 
+const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
 const context = canvas.getContext('2d')!;
 const updateAndDraw = (dt: number) => {
   flock.update(dt, borders);
 
   drawBackground(context);
-  context.save();
-  const { x, y } = borders.getSpaceRect();
-  context.translate(-x, -y);
   if (flags.debug) {
     borders.draw(context);
   }
   flock.draw(context);
-  context.restore();
 };
 
 const drawBackground = (ctx: CanvasRenderingContext2D) => {
