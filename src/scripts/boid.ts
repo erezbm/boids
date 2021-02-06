@@ -46,7 +46,9 @@ export default class Boid {
     const seesBoids = boidsInView.length > 0;
     if (seesBoids) this.currentSearch = null;
 
-    return (seesBoids ? this.calcFlockForce(boidsInView, dt) : this.calcSearchForce(dt, borders)).add(this.calcBordersForce(borders));
+    const selfAppliedForce = seesBoids ? this.calcFlockForce(boidsInView, dt) : this.calcSearchForce(dt, borders);
+    const externalAppliedForce = this.calcBordersForce(borders);
+    return selfAppliedForce.limitMag(Boid.maxForce).add(externalAppliedForce);
   }
 
   private calcFlockForce(boidsInView: Boid[], dt: number) {
