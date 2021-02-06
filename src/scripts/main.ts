@@ -6,7 +6,7 @@ import zaguriImage from '/images/zaguri.png';
 flags.image.src = zaguriImage;
 
 const borders = new RectBorders(document.getElementById('visible-space')!);
-const flock = new Flock(500, borders);
+const flock = new Flock(100, borders);
 
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse

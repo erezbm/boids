@@ -24,7 +24,7 @@ export default class Boid {
   public velocity = new Vector();
 
   public static desiredFlockSpeed = Boid.maxSpeed / 2;
-  public static desiredSeparationDistance = Boid.viewDistance / 4;
+  public static desiredSeparationDistance = Boid.radius * 2;
 
   public static searchTargetRadius = 15;
   public static searchTime = 50;
