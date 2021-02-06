@@ -16,24 +16,29 @@
     </div>
 
     <!-- drawer -->
-    <aside class="mdc-drawer mdc-drawer--dismissible" id="boids-settings-drawer">
+    <aside id="boids-settings-drawer" class="mdc-drawer mdc-drawer--dismissible">
       <div class="mdc-drawer__content">
         <div class="mdc-list">
-          <a class="mdc-list-item mdc-list-item--activated" href="#" aria-current="page">
-            <span class="mdc-list-item__ripple"></span>
-            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
-            <span class="mdc-list-item__text">Inbox</span>
-          </a>
-          <a class="mdc-list-item" href="#">
-            <span class="mdc-list-item__ripple"></span>
-            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
-            <span class="mdc-list-item__text">Outgoing</span>
-          </a>
-          <a class="mdc-list-item" href="#">
-            <span class="mdc-list-item__ripple"></span>
-            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-            <span class="mdc-list-item__text">Drafts</span>
-          </a>
+          <!-- Put "Number of boids" label where this comment is -->
+          <div id="number-of-boids-slider" class="mdc-slider mdc-slider--discrete">
+            <input class="mdc-slider__input" type="range" min="0" max="1000" value="100">
+            <div class="mdc-slider__track">
+              <div class="mdc-slider__track--inactive"></div>
+              <div class="mdc-slider__track--active">
+                <div class="mdc-slider__track--active_fill"></div>
+              </div>
+            </div>
+            <div class="mdc-slider__thumb">
+              <div class="mdc-slider__value-indicator-container" aria-hidden="true">
+                <div class="mdc-slider__value-indicator">
+                  <span class="mdc-slider__value-indicator-text">
+                    100
+                  </span>
+                </div>
+              </div>
+              <div class="mdc-slider__thumb-knob"></div>
+            </div>
+          </div>
         </div>
       </div>
     </aside>

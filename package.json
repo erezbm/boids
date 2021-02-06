@@ -1,7 +1,10 @@
 {
   "scripts": {
+    "clean": "rimraf dist",
+    "prewatch": "npm run clean",
     "watch": "parcel watch src/index.html --public-url .",
     "typecheck": "tsc --noEmit --watch",
+    "prebuild": "npm run clean",
     "build": "parcel build src/index.html --public-url ."
   },
   "eslintConfig": {
@@ -21,6 +24,7 @@
       "object-curly-newline": "off",
       "no-mixed-operators": "off",
       "import/no-absolute-path": "off",
+      "import/no-cycle": "off",
       "@typescript-eslint/no-use-before-define": "off",
       "@typescript-eslint/lines-between-class-members": [
         "error",
@@ -53,6 +57,7 @@
     "@material/drawer": "^9.0.0",
     "@material/icon-button": "^9.0.0",
     "@material/ripple": "^9.0.0",
+    "@material/slider": "^9.0.0",
     "@material/top-app-bar": "^9.0.0"
   }
 }

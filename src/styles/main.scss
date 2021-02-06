@@ -1,4 +1,4 @@
-@use "@material/theme" with (
+@use '@material/theme' with (
   $primary: #616161,
 );
 @use '@material/drawer';
@@ -6,6 +6,8 @@
 @use '@material/icon-button';
 @use '@material/top-app-bar/mdc-top-app-bar';
 @use '@material/ripple';
+@use '@material/slider/styles';
+@use '@material/animation/variables' as animation-variables;
 
 @include drawer.core-styles;
 @include drawer.dismissible-core-styles;
@@ -57,10 +59,13 @@ body {
 }
 
 .mdc-drawer-app-content {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition: 250ms;
+  transition-timing-function: animation-variables.$standard-curve-timing-function;
+}
+
+.mdc-drawer-app-content {
+  transition-duration: drawer.$animation-enter;
 }
 
 .mdc-drawer--closing + .mdc-drawer-app-content {
-  transition: 200ms;
+  transition-duration: drawer.$animation-exit;
 }
