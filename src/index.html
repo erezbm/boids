@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boids</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet">
     <link rel="stylesheet" href="styles/main.scss">
     <script defer src="scripts/ui.ts"></script>
     <script defer src="scripts/main.ts"></script>
   </head>
-  <body>
+  <body class="mdc-typography">
     <div id="boids-canvas-container">
       <!-- canvas -->
       <canvas id="boids-canvas"></canvas>
@@ -17,10 +21,15 @@
 
     <!-- drawer -->
     <aside id="boids-settings-drawer" class="mdc-drawer mdc-drawer--dismissible">
-      <div class="mdc-drawer__content">
-        <div class="mdc-list">
-          <!-- Put "Number of boids" label where this comment is -->
-          <div id="number-of-boids-slider" class="mdc-slider mdc-slider--discrete">
+      <div class="mdc-drawer__header">
+        <h3 class="mdc-drawer__title">Settings</h3>
+      </div>
+      <div class="mdc-drawer__content" style="padding: 0 16px 0 24px;">
+        <!-- number of boids setting -->
+        <span class="mdc-typography--body1">Number of boids:</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <!-- number of boids slider -->
+          <div id="number-of-boids-slider" class="mdc-slider" style="margin: 0; margin-right: 24px; width: 100%;">
             <input class="mdc-slider__input" type="range" min="0" max="1000" value="100">
             <div class="mdc-slider__track">
               <div class="mdc-slider__track--inactive"></div>
@@ -29,17 +38,19 @@
               </div>
             </div>
             <div class="mdc-slider__thumb">
-              <div class="mdc-slider__value-indicator-container" aria-hidden="true">
-                <div class="mdc-slider__value-indicator">
-                  <span class="mdc-slider__value-indicator-text">
-                    100
-                  </span>
-                </div>
-              </div>
               <div class="mdc-slider__thumb-knob"></div>
             </div>
           </div>
+          <!-- number of boids text field -->
+          <label id="number-of-boids-text-field" class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label">
+            <span class="mdc-notched-outline">
+              <span class="mdc-notched-outline__leading"></span>
+              <span class="mdc-notched-outline__trailing"></span>
+            </span>
+            <input class="mdc-text-field__input disable-arrows" style="width: 2.5em;" type="number" min="0" max="1000" value="100">
+          </label>
         </div>
+        <!-- other settings... -->
       </div>
     </aside>
     <!-- drawer app content -->
