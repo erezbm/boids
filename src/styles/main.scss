@@ -1,5 +1,7 @@
 @use '@material/theme' with (
-  $primary: #616161,
+  $primary: #fff,
+  $surface: #333,
+  $background: #222,
 );
 @use '@material/typography' with (
   $font-family: unquote("'Roboto Mono', monospace"),
@@ -11,6 +13,7 @@
 @use '@material/list';
 @use '@material/icon-button';
 @use '@material/top-app-bar/mdc-top-app-bar';
+@use '@material/top-app-bar';
 @use '@material/ripple';
 @use '@material/slider/styles';
 @use '@material/animation/variables' as animation-variables;
@@ -19,6 +22,7 @@
 @use '@material/notched-outline/mdc-notched-outline';
 @use '@material/textfield';
 
+@include theme.core-styles;
 @include typography.core-styles;
 @include drawer.core-styles;
 @include drawer.dismissible-core-styles;
@@ -26,6 +30,15 @@
 @include list.core-styles;
 @include icon-button.core-styles;
 @include textfield.core-styles;
+
+.mdc-top-app-bar {
+  @include top-app-bar.fill-color-accessible(surface);
+  @include top-app-bar.icon-ink-color(on-surface);
+}
+
+.mdc-drawer {
+  @include theme.property(color, on-surface);
+}
 
 .mdc-text-field--filled {
   @include textfield.density(-4);

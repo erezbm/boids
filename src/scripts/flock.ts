@@ -5,19 +5,21 @@ export default class Flock {
   // TODO use a quadtree instead for performance
   private boids: Boid[] = [];
 
+  get numBoids() { return this.boids.length; }
+
   constructor(numBoids: number, borders: RectBorders) {
-    this.addBoids(numBoids, borders);
+    this.setNumBoids(numBoids, borders);
   }
 
-  addBoids(amount: number, borders: RectBorders) {
-    this.boids = [
-      ...this.boids,
-      ...Array.from({ length: amount }, () => Boid.createInRandomPosition(borders)),
-    ];
-  }
-
-  removeBoids(amount: number) {
-    this.boids.splice(this.boids.length - amount, amount);
+  setNumBoids(numBoids: number, borders: RectBorders) {
+    if (numBoids > this.boids.length) {
+      this.boids = [
+        ...this.boids,
+        ...Array.from({ length: numBoids - this.boids.length }, () => Boid.createInRandomPosition(borders)),
+      ];
+    } else if (numBoids < this.boids.length) {
+      this.boids.splice(numBoids, this.boids.length - numBoids);
+    }
   }
 
   update(dt: number, borders: RectBorders) {

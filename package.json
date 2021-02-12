@@ -59,6 +59,7 @@
     "@material/ripple": "^9.0.0",
     "@material/slider": "^9.0.0",
     "@material/textfield": "^10.0.0",
+    "@material/theme": "^10.0.0",
     "@material/top-app-bar": "^9.0.0",
     "@material/typography": "^10.0.0"
   }

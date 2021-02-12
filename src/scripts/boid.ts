@@ -18,7 +18,7 @@ export default class Boid {
 
   public static viewDistance = 100;
 
-  public static radius = 30;
+  public static radius = 10;
 
   public acceleration = new Vector();
   public velocity = new Vector();
@@ -43,18 +43,19 @@ export default class Boid {
   calcNetForce(dt: number, boids: readonly Boid[], borders: RectBorders) {
     const boidsInView = boids.filter((boid) => boid !== this && this.position.distLTE(boid.position, Boid.viewDistance));
 
-    const seesBoids = boidsInView.length > 0;
+    const seesBoids = boidsInView.length >= 1;
     if (seesBoids) this.currentSearch = null;
 
     const selfAppliedForce = seesBoids ? this.calcFlockForce(boidsInView, dt) : this.calcSearchForce(dt, borders);
     const externalAppliedForce = this.calcBordersForce(borders);
-    return selfAppliedForce.limitMag(Boid.maxForce).add(externalAppliedForce);
+    // TODO dont add random force if they already broke the stalemate (velocity isnt pointing (or opposite...) to the other boids)
+    return (boidsInView.length !== 1 ? selfAppliedForce : selfAppliedForce.add(Vector.randomMag(Boid.maxForce))).limitMag(Boid.maxForce).add(externalAppliedForce);
   }
 
   private calcFlockForce(boidsInView: Boid[], dt: number) {
     return this.calcSeparationForce(boidsInView, dt)
       .add(this.calcAlignmentForce(boidsInView, dt))
-      .add(this.calcCohesionForce(boidsInView, dt));
+      .add(this.calcCohesionForce(boidsInView, dt).mult(1.5));
   }
 
   private calcSeparationForce(boidsInView: Boid[], dt: number) {

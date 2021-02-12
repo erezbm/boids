@@ -1,3 +1,9 @@
+import { MDCTopAppBar } from '@material/top-app-bar';
+import { MDCRipple } from '@material/ripple';
+import { MDCDrawer } from '@material/drawer';
+import { MDCSlider } from '@material/slider';
+import { MDCTextField } from '@material/textfield';
+
 import RectBorders from './borders';
 import flags from './flags';
 import Flock from './flock';
@@ -41,3 +47,46 @@ requestAnimationFrame(function callback(time) {
   lastTime = time;
   requestAnimationFrame(callback);
 });
+
+// UI
+MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar')!);
+const settingsButton = document.getElementById('boids-settings-btn') as HTMLButtonElement;
+MDCRipple.attachTo(settingsButton);
+const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-settings-drawer')!);
+settingsDrawer.list?.listElements.forEach((listElement) => MDCRipple.attachTo(listElement));
+const numberOfBoidsTextField = new MDCTextField(document.getElementById('number-of-boids-text-field')!);
+
+const numberOfBoidsSlider = new MDCSlider(document.getElementById('number-of-boids-slider')!);
+
+(() => {
+  const n = flock.numBoids;
+  numberOfBoidsTextField.value = n.toString();
+  numberOfBoidsSlider.setValue(n);
+})();
+
+numberOfBoidsSlider.listen('MDCSlider:input', () => {
+  const n = numberOfBoidsSlider.getValue();
+  numberOfBoidsTextField.value = n.toString();
+  flock.setNumBoids(n, borders);
+});
+
+numberOfBoidsTextField.listen('input', () => {
+  if (numberOfBoidsTextField.valid) {
+    const n = Number(numberOfBoidsTextField.value);
+    numberOfBoidsSlider.setValue(n);
+    flock.setNumBoids(n, borders);
+  }
+});
+
+settingsButton.addEventListener('click', () => {
+  settingsDrawer.open = !settingsDrawer.open;
+});
+document.body.addEventListener('MDCDrawer:opened', () => {
+  numberOfBoidsSlider.layout();
+});
+
+// const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
+new ResizeObserver(() => {
+  const { clientWidth, clientHeight } = document.documentElement;
+  [canvas.width, canvas.height] = [clientWidth, clientHeight];
+}).observe(document.documentElement);
