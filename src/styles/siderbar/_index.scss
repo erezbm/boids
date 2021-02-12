@@ -1,0 +1,48 @@
+@use '@material/drawer' with (
+  $width: 320px,
+  $surface-padding: 24px,
+);
+@use '@material/theme';
+
+@use '@material/slider/styles';
+
+@use '@material/floating-label/mdc-floating-label';
+@use '@material/line-ripple/mdc-line-ripple';
+@use '@material/notched-outline/mdc-notched-outline';
+@use '@material/textfield';
+
+@use './drawer-app-content-animation';
+@use '../disable-arrows';
+
+@include drawer.core-styles;
+@include drawer.dismissible-core-styles;
+@include drawer.modal-core-styles;
+
+@include textfield.core-styles;
+
+// Position the drawer-app-content next to the drawer, and the top-app-bar inside it
+body {
+  display: flex;
+}
+
+.mdc-drawer-app-content {
+  flex: auto;
+}
+
+.mdc-top-app-bar {
+  position: absolute;
+}
+
+// Set the color of the text in the drawer to the theme's on-surface
+.mdc-drawer {
+  @include theme.property(color, on-surface);
+}
+
+// Make the height of the text fields smaller
+.mdc-text-field--filled {
+  @include textfield.density(-4);
+}
+
+.mdc-text-field--outlined {
+  @include textfield.outlined-density(-4);
+}

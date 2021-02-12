@@ -6,53 +6,27 @@
 @use '@material/typography' with (
   $font-family: unquote("'Roboto Mono', monospace"),
 );
-@use '@material/drawer' with (
-  $width: 320px,
-  $surface-padding: 24px,
-);
-@use '@material/list';
 @use '@material/icon-button';
 @use '@material/top-app-bar/mdc-top-app-bar';
 @use '@material/top-app-bar';
 @use '@material/ripple';
-@use '@material/slider/styles';
-@use '@material/animation/variables' as animation-variables;
-@use '@material/floating-label/mdc-floating-label';
-@use '@material/line-ripple/mdc-line-ripple';
-@use '@material/notched-outline/mdc-notched-outline';
-@use '@material/textfield';
+
+@use './siderbar';
 
 @include theme.core-styles;
 @include typography.core-styles;
-@include drawer.core-styles;
-@include drawer.dismissible-core-styles;
-@include drawer.modal-core-styles;
-@include list.core-styles;
+
 @include icon-button.core-styles;
-@include textfield.core-styles;
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
 
 .mdc-top-app-bar {
   @include top-app-bar.fill-color-accessible(surface);
   @include top-app-bar.icon-ink-color(on-surface);
-}
-
-.mdc-drawer {
-  @include theme.property(color, on-surface);
-}
-
-.mdc-text-field--filled {
-  @include textfield.density(-4);
-}
-
-.mdc-text-field--outlined {
-  @include textfield.outlined-density(-4);
-}
-
-.mdc-list-item {
-  @include ripple.surface;
-  @include ripple.radius-bounded;
-  @include ripple.states;
-  overflow: hidden;
 }
 
 #boids-settings-btn {
@@ -62,12 +36,6 @@
   overflow: visible;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-
 #boids-canvas-container {
   position: absolute;
   width: 100vw;
@@ -75,42 +43,6 @@ html, body {
   overflow: hidden;
 }
 
-body {
-  display: flex;
-}
-
-.mdc-drawer-app-content {
-  flex: auto;
-}
-
-.mdc-top-app-bar {
-  position: absolute;
-}
-
 #visible-space {
   height: 100%;
-}
-
-.mdc-drawer-app-content {
-  transition-timing-function: animation-variables.$standard-curve-timing-function;
-}
-
-.mdc-drawer-app-content {
-  transition-duration: drawer.$animation-enter;
-}
-
-.mdc-drawer--closing + .mdc-drawer-app-content {
-  transition-duration: drawer.$animation-exit;
-}
-
-/* Chrome, Safari, Edge, Opera */
-input.disable-arrows::-webkit-outer-spin-button,
-input.disable-arrows::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input.disable-arrows[type=number] {
-  -moz-appearance: textfield;
 }

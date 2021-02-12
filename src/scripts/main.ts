@@ -17,6 +17,8 @@ const flock = new Flock(100, borders);
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
 // TODO add sidebar with:
+// - restart button
+// - reset to defaults button
 // - input for number of boids
 // - input for background transparency
 // - inputs for the various parameters

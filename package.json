@@ -1,11 +1,10 @@
 {
   "scripts": {
-    "clean": "rimraf dist",
-    "prewatch": "npm run clean",
     "watch": "parcel watch src/index.html --public-url .",
     "typecheck": "tsc --noEmit --watch",
     "prebuild": "npm run clean",
-    "build": "parcel build src/index.html --public-url ."
+    "build": "parcel build src/index.html --public-url .",
+    "clean": "rimraf dist .cache"
   },
   "eslintConfig": {
     "extends": "airbnb-typescript/base",

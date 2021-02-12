@@ -1,0 +1,14 @@
+@use '@material/drawer';
+@use '@material/animation/variables' as animation-variables;
+
+.mdc-drawer-app-content {
+  transition-timing-function: animation-variables.$standard-curve-timing-function;
+}
+
+.mdc-drawer-app-content {
+  transition-duration: drawer.$animation-enter;
+}
+
+.mdc-drawer--closing + .mdc-drawer-app-content {
+  transition-duration: drawer.$animation-exit;
+}
