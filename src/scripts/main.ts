@@ -20,6 +20,7 @@ flags.image.src = zaguriImage;
 // - inputs for the various parameters
 // - checkboxes for the different debug draw functions
 // TODO getting initial settings from url parameters
+// TODO rainbow colored boids
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
 const visibleSpace = document.getElementById('visible-space')!;
@@ -32,7 +33,6 @@ MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar')!);
 const settingsButton = document.getElementById('boids-settings-btn') as HTMLButtonElement;
 MDCRipple.attachTo(settingsButton);
 const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-settings-drawer')!);
-settingsDrawer.list?.listElements.forEach((listElement) => MDCRipple.attachTo(listElement));
 const numberOfBoidsTextField = new MDCTextField(document.getElementById('number-of-boids-text-field')!);
 
 const numberOfBoidsSlider = new MDCSlider(document.getElementById('number-of-boids-slider')!);

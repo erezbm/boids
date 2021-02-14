@@ -5,14 +5,6 @@ export default class Boids {
   // TODO use a quadtree instead for performance
   #boids: Boid[] = [];
 
-  constructor();
-  constructor(numberOfBoids: number, borders: RectBorders);
-  constructor(numberOfBoids?: number, borders?: RectBorders) {
-    if (numberOfBoids !== undefined && borders !== undefined) {
-      this.setNumberOfBoids(numberOfBoids, borders);
-    }
-  }
-
   get numberOfBoids() { return this.#boids.length; }
 
   setNumberOfBoids(numberOfBoids: number, borders: RectBorders) {

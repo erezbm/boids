@@ -18,7 +18,7 @@ export default class Boid {
 
   public static viewDistance = 100;
 
-  public static radius = 10;
+  public static radius = 20;
 
   public acceleration = new Vector();
   public velocity = new Vector();
