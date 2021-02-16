@@ -4,12 +4,11 @@ import { MDCDrawer } from '@material/drawer';
 import { MDCSlider } from '@material/slider';
 import { MDCTextField } from '@material/textfield';
 
-import flags from './flags';
-import zaguriImage from '/images/zaguri.png';
-import Simulator from './simulator';
+import zaguriImageUrl from '/images/zaguri.png';
+import Simulator, { SimulatorSettings } from './simulator';
+import { AppearanceType } from './boid';
 
-flags.image.src = zaguriImage;
-
+// TODO implement FOV cone (might make the boids have V shape)
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
 // TODO add sidebar with:
@@ -24,9 +23,35 @@ flags.image.src = zaguriImage;
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
 const visibleSpace = document.getElementById('visible-space')!;
-const simulator = new Simulator(canvas, visibleSpace);
-simulator.numberOfBoids = 100;
+const settings = getSimulatorSettings();
+const simulator = new Simulator(canvas, visibleSpace, settings);
 simulator.start();
+
+function getSimulatorSettings(): SimulatorSettings {
+  const boidMaxSpeed = 500;
+  const boidRadius = 20;
+  const zaguriImage = new Image();
+  zaguriImage.src = zaguriImageUrl;
+  return {
+    numberOfBoids: 100,
+    backgroundOpacity: 1,
+    boid: {
+      maxSpeed: boidMaxSpeed,
+      maxForce: 1 * boidMaxSpeed,
+      viewDistance: 100,
+      radius: boidRadius,
+      separationFactor: 1,
+      alignmentFactor: 1,
+      cohesionFactor: 1.5,
+      desiredFlockSpeed: boidMaxSpeed / 2,
+      desiredSeparationDistance: boidRadius * 2,
+      searchTargetReachRadius: 15,
+      maxSearchTime: 10,
+      appearance: { type: AppearanceType.Image, image: zaguriImage },
+    },
+    bordersEffectDistance: 50,
+  };
+}
 
 // UI
 MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar')!);

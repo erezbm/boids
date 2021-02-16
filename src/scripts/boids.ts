@@ -1,17 +1,24 @@
-import Boid from './boid';
+import Boid, { BoidSettings } from './boid';
 import RectBorders from './borders';
+import Rectangle from './rectangle';
 
 export default class Boids {
   // TODO use a quadtree instead for performance
   #boids: Boid[] = [];
 
+  readonly #boidSettings: BoidSettings;
+
+  constructor(boidSettings: BoidSettings) {
+    this.#boidSettings = boidSettings;
+  }
+
   get numberOfBoids() { return this.#boids.length; }
 
-  setNumberOfBoids(numberOfBoids: number, borders: RectBorders) {
+  setNumberOfBoids(numberOfBoids: number, rect: Rectangle) {
     if (numberOfBoids > this.#boids.length) {
       this.#boids = [
         ...this.#boids,
-        ...Array.from({ length: numberOfBoids - this.#boids.length }, () => Boid.createInRandomPosition(borders)),
+        ...Array.from({ length: numberOfBoids - this.#boids.length }, () => Boid.createInRandomPosition(rect, this.#boidSettings)),
       ];
     } else if (numberOfBoids < this.#boids.length) {
       this.#boids.splice(numberOfBoids, this.#boids.length - numberOfBoids);
