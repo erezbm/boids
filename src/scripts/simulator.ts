@@ -1,13 +1,13 @@
 import { BoidSettings } from './boid';
 import Boids from './boids';
 import RectBorders, { RectBordersSettings } from './borders';
-import { Mutable } from './utils';
+import { Mutable, OmitSafe } from './utils';
 
 export type SimulatorSettings = Readonly<{
   numberOfBoids: number,
   backgroundOpacity: number,
   boid: BoidSettings,
-  bordersEffectDistance: number,
+  borders: OmitSafe<RectBordersSettings, 'maxForce'>,
 }>;
 
 export default class Simulator {
@@ -24,7 +24,8 @@ export default class Simulator {
     this.#settings = settings;
     this.#bordersSettings = {
       maxForce: 2 * this.#settings.boid.maxForce,
-      effectDistance: this.#settings.bordersEffectDistance,
+      effectDistance: this.#settings.borders.effectDistance,
+      drawEffectDistance: this.#settings.borders.drawEffectDistance,
     };
 
     this.#borders = new RectBorders(visibleSpace, this.#bordersSettings);

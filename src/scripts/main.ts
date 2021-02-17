@@ -48,8 +48,15 @@ function getSimulatorSettings(): SimulatorSettings {
       searchTargetReachRadius: 15,
       maxSearchTime: 10,
       appearance: { type: AppearanceType.Image, image: zaguriImage },
+      drawVelocity: false,
+      drawAcceleration: false,
+      drawFieldOfView: false,
+      drawSearch: false,
     },
-    bordersEffectDistance: 50,
+    borders: {
+      effectDistance: 50,
+      drawEffectDistance: false,
+    },
   };
 }
 

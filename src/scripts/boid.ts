@@ -1,5 +1,4 @@
 import RectBorders from './borders';
-import flags from './flags';
 import Rectangle from './rectangle';
 import { mapRange, toRadians } from './utils';
 import Vector from './vector';
@@ -24,7 +23,10 @@ export type BoidSettings = Readonly<{
   searchTargetReachRadius: number,
   maxSearchTime: number,
   appearance: { type: AppearanceType.Triangle, color: string; } | { type: AppearanceType.Image, image: CanvasImageSource; },
-  // TODO add debug drawing settings
+  drawVelocity: boolean,
+  drawAcceleration: boolean,
+  drawFieldOfView: boolean,
+  drawSearch: boolean,
 }>;
 
 type DebugInfo = {
@@ -145,12 +147,11 @@ export default class Boid {
   draw(ctx: CanvasRenderingContext2D) {
     this.drawBody(ctx);
 
-    if (flags.debug) {
-      this.drawVelocity(ctx);
-      this.drawAcceleration(ctx);
-      this.drawView(ctx);
-      if (this.#currentSearch) this.drawSearch(ctx, this.#currentSearch);
-    }
+    const { drawVelocity, drawAcceleration, drawFieldOfView, drawSearch } = this.#settings;
+    if (drawVelocity) this.drawVelocity(ctx);
+    if (drawAcceleration) this.drawAcceleration(ctx);
+    if (drawFieldOfView) this.drawFieldOfView(ctx);
+    if (drawSearch && this.#currentSearch) this.drawSearch(ctx, this.#currentSearch);
   }
 
   private drawBody(ctx: CanvasRenderingContext2D) {
@@ -209,7 +210,7 @@ export default class Boid {
     ctx.stroke();
   }
 
-  private drawView(ctx: CanvasRenderingContext2D) {
+  private drawFieldOfView(ctx: CanvasRenderingContext2D) {
     ctx.strokeStyle = 'yellow';
     ctx.lineWidth = 1;
 

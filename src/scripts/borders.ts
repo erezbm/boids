@@ -1,11 +1,10 @@
 import Border, { BorderSettings } from './border';
-import flags from './flags';
 import Rectangle from './rectangle';
 import Vector from './vector';
 
-export type RectBordersSettings = BorderSettings & {
-  // TODO add debug drawing settings
-};
+export type RectBordersSettings = BorderSettings & Readonly<{
+  drawEffectDistance: boolean,
+}>;
 
 export default class RectBorders {
   readonly #settings: RectBordersSettings;
@@ -49,7 +48,7 @@ export default class RectBorders {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    if (!flags.debug) return;
+    if (!this.#settings.drawEffectDistance) return;
 
     const { x, y, width, height } = this.#spaceRect;
     const { effectDistance } = this.#settings;

@@ -3,3 +3,4 @@ export const mapRange = (value: number, x1: number, y1: number, x2: number, y2: 
 export const toRadians = (degrees: number) => degrees * (Math.PI / 180);
 
 export type Mutable<T> = { -readonly [K in keyof T]: T[K] };
+export type OmitSafe<T, K extends keyof T> = Omit<T, K>;
