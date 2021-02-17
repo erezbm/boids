@@ -4,3 +4,4 @@ export const toRadians = (degrees: number) => degrees * (Math.PI / 180);
 
 export type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 export type OmitSafe<T, K extends keyof T> = Omit<T, K>;
+export type ReplacePropertyType<T, K extends keyof T, U> = OmitSafe<T, K> & { [P in K]: U };

@@ -18,7 +18,8 @@ import { AppearanceType } from './boid';
 // - input for background transparency
 // - inputs for the various parameters
 // - checkboxes for the different debug draw functions
-// TODO getting initial settings from url parameters
+// TODO getting initial settings from url parameters, and add copy url with settings button
+// TODO persist settings with cookies
 // TODO rainbow colored boids
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;

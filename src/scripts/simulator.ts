@@ -1,36 +1,54 @@
 import { BoidSettings } from './boid';
 import Boids from './boids';
 import RectBorders, { RectBordersSettings } from './borders';
-import { Mutable, OmitSafe } from './utils';
+import { Mutable, OmitSafe, ReplacePropertyType } from './utils';
 
-export type SimulatorSettings = Readonly<{
-  numberOfBoids: number,
+type MutableSimulatorSettings = {
   backgroundOpacity: number,
+};
+
+export type SimulatorSettings = Readonly<MutableSimulatorSettings & {
+  numberOfBoids: number,
   boid: BoidSettings,
   borders: OmitSafe<RectBordersSettings, 'maxForce'>,
 }>;
 
-export default class Simulator {
-  #settings: SimulatorSettings;
+/* eslint-disable @typescript-eslint/indent */
+// If typescript had higher-order types we could have SimulatorSettings<Partial> instead
+export type PartialSimulatorSettings = Partial<
+  ReplacePropertyType<ReplacePropertyType<
+    SimulatorSettings,
+    'boid', Partial<SimulatorSettings['boid']>>,
+    'borders', Partial<SimulatorSettings['borders']>>
+>;
+/* eslint-enable @typescript-eslint/indent */
 
-  readonly #bordersSettings: Mutable<RectBordersSettings>;
+export default class Simulator {
+  #settings: MutableSimulatorSettings;
 
   readonly #boids: Boids;
   readonly #borders: RectBorders;
+
+  readonly #bordersSettings: Mutable<RectBordersSettings>;
+  readonly #boidSettings: Mutable<BoidSettings>;
 
   readonly #context: CanvasRenderingContext2D;
 
   constructor(canvas: HTMLCanvasElement, visibleSpace: Element, settings: SimulatorSettings) {
     this.#settings = settings;
-    this.#bordersSettings = {
-      maxForce: 2 * this.#settings.boid.maxForce,
-      effectDistance: this.#settings.borders.effectDistance,
-      drawEffectDistance: this.#settings.borders.drawEffectDistance,
-    };
 
+    this.#bordersSettings = {
+      maxForce: 2 * settings.boid.maxForce,
+      effectDistance: settings.borders.effectDistance,
+      drawEffectDistance: settings.borders.drawEffectDistance,
+    };
     this.#borders = new RectBorders(visibleSpace, this.#bordersSettings);
-    this.#boids = new Boids(this.#settings.boid);
-    this.numberOfBoids = this.#settings.numberOfBoids;
+
+    this.#boidSettings = settings.boid;
+    this.#boids = new Boids(this.#boidSettings);
+
+    this.numberOfBoids = settings.numberOfBoids;
+
     this.#context = canvas.getContext('2d')!;
   }
 
@@ -60,8 +78,25 @@ export default class Simulator {
     this.#requestId = null;
   }
 
-  updateSettings(settings: Partial<SimulatorSettings>) {
-    // TODO
+  updateSettings(settings: PartialSimulatorSettings) {
+    const s = settings;
+    if (s.numberOfBoids !== undefined) this.numberOfBoids = s.numberOfBoids;
+    this.#settings = { ...this.#settings, ...settings };
+    if (s.boid !== undefined) this.updateBoidSettings(s.boid);
+    if (s.borders !== undefined) this.updateBordersSettings(s.borders);
+  }
+
+  private updateBoidSettings(boidSettings: Partial<SimulatorSettings['boid']>) {
+    Object.entries(boidSettings).forEach(([key, value]) => {
+      if (value !== undefined) (this.#boidSettings[key as keyof typeof boidSettings] as any) = value;
+    });
+    this.#bordersSettings.maxForce = 2 * this.#boidSettings.maxForce;
+  }
+
+  private updateBordersSettings(bordersSettings: Partial<SimulatorSettings['borders']>) {
+    Object.entries(bordersSettings).forEach(([key, value]) => {
+      if (value !== undefined) (this.#bordersSettings[key as keyof typeof bordersSettings] as any) = value;
+    });
   }
 
   private update(dt: number) {
