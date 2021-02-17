@@ -88,14 +88,14 @@ export default class Simulator {
 
   private updateBoidSettings(boidSettings: Partial<SimulatorSettings['boid']>) {
     Object.entries(boidSettings).forEach(([key, value]) => {
-      if (value !== undefined) (this.#boidSettings[key as keyof typeof boidSettings] as any) = value;
+      if (value !== undefined) (this.#boidSettings as any)[key] = value;
     });
     this.#bordersSettings.maxForce = 2 * this.#boidSettings.maxForce;
   }
 
   private updateBordersSettings(bordersSettings: Partial<SimulatorSettings['borders']>) {
     Object.entries(bordersSettings).forEach(([key, value]) => {
-      if (value !== undefined) (this.#bordersSettings[key as keyof typeof bordersSettings] as any) = value;
+      if (value !== undefined) (this.#bordersSettings as any)[key] = value;
     });
   }
 
