@@ -38,6 +38,10 @@ body {
   @include theme.property(color, on-surface);
 }
 
+.mdc-drawer__content {
+  overscroll-behavior-y: contain;
+}
+
 // Make the height of the text fields smaller
 .mdc-text-field--filled {
   @include textfield.density(-4);
