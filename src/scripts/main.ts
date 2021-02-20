@@ -14,10 +14,7 @@ import { AppearanceType } from './boid';
 // TODO add sidebar with:
 // - restart button
 // - reset to defaults button (possibly reset to default button on each input)
-// - input for number of boids
-// - input for background transparency
-// - inputs for the various parameters
-// - checkboxes for the different debug draw functions
+// - inputs/checkboxes for the remaining settings
 // TODO getting initial settings from url parameters, and add copy url with settings button
 // TODO persist settings with cookies
 // TODO rainbow colored boids
