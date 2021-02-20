@@ -13,7 +13,7 @@ import { AppearanceType } from './boid';
 // TODO make boids flee from mouse
 // TODO add sidebar with:
 // - restart button
-// - reset to defaults button
+// - reset to defaults button (possibly reset to default button on each input)
 // - input for number of boids
 // - input for background transparency
 // - inputs for the various parameters
@@ -66,25 +66,29 @@ MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar')!);
 const settingsButton = document.getElementById('boids-settings-btn') as HTMLButtonElement;
 MDCRipple.attachTo(settingsButton);
 const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-settings-drawer')!);
-const numberOfBoidsTextField = new MDCTextField(document.getElementById('number-of-boids-text-field')!);
+const numberOfBoidsTextField = MDCTextField.attachTo(document.getElementById('number-of-boids-text-field')!);
+const numberOfBoidsSlider = MDCSlider.attachTo(document.getElementById('number-of-boids-slider')!);
+const backgroundOpacitySlider = MDCSlider.attachTo(document.getElementById('background-opacity-slider')!);
 
-const numberOfBoidsSlider = new MDCSlider(document.getElementById('number-of-boids-slider')!);
-
-numberOfBoidsTextField.value = simulator.numberOfBoids.toString();
-numberOfBoidsSlider.setValue(simulator.numberOfBoids);
-
-numberOfBoidsSlider.listen('MDCSlider:input', () => {
-  const n = numberOfBoidsSlider.getValue();
-  numberOfBoidsTextField.value = n.toString();
-  simulator.numberOfBoids = n;
-});
+numberOfBoidsTextField.value = simulator.settings.numberOfBoids.toString();
+numberOfBoidsSlider.setValue(simulator.settings.numberOfBoids);
 
 numberOfBoidsTextField.listen('input', () => {
   if (numberOfBoidsTextField.valid) {
     const n = Number(numberOfBoidsTextField.value);
     numberOfBoidsSlider.setValue(n);
-    simulator.numberOfBoids = n;
+    simulator.updateSettings({ numberOfBoids: n });
   }
+});
+
+numberOfBoidsSlider.listen('MDCSlider:input', () => {
+  const n = numberOfBoidsSlider.getValue();
+  numberOfBoidsTextField.value = n.toString();
+  simulator.updateSettings({ numberOfBoids: n });
+});
+
+backgroundOpacitySlider.listen('MDCSlider:input', () => {
+  simulator.updateSettings({ backgroundOpacity: backgroundOpacitySlider.getValue() });
 });
 
 settingsButton.addEventListener('click', () => {
@@ -92,6 +96,7 @@ settingsButton.addEventListener('click', () => {
 });
 document.body.addEventListener('MDCDrawer:opened', () => {
   numberOfBoidsSlider.layout();
+  backgroundOpacitySlider.layout();
 });
 
 // const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;

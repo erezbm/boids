@@ -24,11 +24,10 @@ export type PartialSimulatorSettings = Partial<
 /* eslint-enable @typescript-eslint/indent */
 
 export default class Simulator {
-  #settings: MutableSimulatorSettings;
-
   readonly #boids: Boids;
   readonly #borders: RectBorders;
 
+  #settings: MutableSimulatorSettings;
   readonly #bordersSettings: Mutable<RectBordersSettings>;
   readonly #boidSettings: Mutable<BoidSettings>;
 
@@ -47,13 +46,19 @@ export default class Simulator {
     this.#boidSettings = settings.boid;
     this.#boids = new Boids(this.#boidSettings);
 
-    this.numberOfBoids = settings.numberOfBoids;
+    this.#boids.setNumberOfBoids(settings.numberOfBoids, this.#borders.getFreeZone());
 
     this.#context = canvas.getContext('2d')!;
   }
 
-  get numberOfBoids() { return this.#boids.numberOfBoids; }
-  set numberOfBoids(numberOfBoids: number) { this.#boids.setNumberOfBoids(numberOfBoids, this.#borders.getFreeZone()); }
+  get settings(): SimulatorSettings {
+    return {
+      numberOfBoids: this.#boids.numberOfBoids,
+      backgroundOpacity: this.#settings.backgroundOpacity,
+      boid: this.#boidSettings,
+      borders: this.#bordersSettings,
+    };
+  }
 
   #requestId: number | null = null;
   start() {
@@ -80,10 +85,11 @@ export default class Simulator {
 
   updateSettings(settings: PartialSimulatorSettings) {
     const s = settings;
-    if (s.numberOfBoids !== undefined) this.numberOfBoids = s.numberOfBoids;
     this.#settings = { ...this.#settings, ...settings };
     if (s.boid !== undefined) this.updateBoidSettings(s.boid);
     if (s.borders !== undefined) this.updateBordersSettings(s.borders);
+    // Update numberOfBoids after to take into account the new settings
+    if (s.numberOfBoids !== undefined) this.#boids.setNumberOfBoids(s.numberOfBoids, this.#borders.getFreeZone());
   }
 
   private updateBoidSettings(boidSettings: Partial<SimulatorSettings['boid']>) {
@@ -104,14 +110,16 @@ export default class Simulator {
   }
 
   private draw(context: CanvasRenderingContext2D) {
-    Simulator.drawBackground(context);
+    this.drawBackground(context);
     this.#borders.draw(context);
     this.#boids.draw(context);
   }
 
-  private static drawBackground(context: CanvasRenderingContext2D) {
-    // context.fillStyle = '#2224';
+  private drawBackground(context: CanvasRenderingContext2D) {
+    const prevAlpha = context.globalAlpha;
+    context.globalAlpha = this.#settings.backgroundOpacity;
     context.fillStyle = '#222';
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    context.globalAlpha = prevAlpha;
   }
 }

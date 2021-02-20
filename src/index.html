@@ -20,15 +20,21 @@
 
     <!-- drawer -->
     <aside id="boids-settings-drawer" class="mdc-drawer mdc-drawer--dismissible">
+
       <div class="mdc-drawer__header">
         <h3 class="mdc-drawer__title">Settings</h3>
       </div>
-      <div class="mdc-drawer__content" style="padding: 0 16px 0 24px;">
+
+      <div class="mdc-drawer__content" style="padding: 0 24px;">
+
         <!-- number of boids setting -->
         <span class="mdc-typography--body1">Number of boids:</span>
+
         <div style="display: flex; justify-content: space-between; align-items: center;">
+
           <!-- number of boids slider -->
-          <div id="number-of-boids-slider" class="mdc-slider" style="margin: 0; margin-right: 24px; width: 100%;">
+          <div id="number-of-boids-slider" class="mdc-slider"
+            style="margin-inline: 0; margin-inline-end: 24px; width: 100%;">
             <input class="mdc-slider__input" type="range" min="0" max="1000" value="100">
             <div class="mdc-slider__track">
               <div class="mdc-slider__track--inactive"></div>
@@ -40,6 +46,7 @@
               <div class="mdc-slider__thumb-knob"></div>
             </div>
           </div>
+
           <!-- number of boids text field -->
           <label id="number-of-boids-text-field"
             class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label">
@@ -50,24 +57,76 @@
             <input class="mdc-text-field__input disable-arrows" style="width: 2.5em;" type="number" min="0" max="1000"
               value="100">
           </label>
+
         </div>
-        <!-- other settings... -->
+
+        <!-- background opacity setting -->
+        <span class="mdc-typography--body1" style="flex-shrink: 0;">Background opacity:</span>
+
+        <!-- background opacity slider -->
+        <div id="background-opacity-slider" class="mdc-slider" style="margin-inline: 0;">
+          <input class="mdc-slider__input" type="range" min="0" max="1" step="0.01" value="1">
+          <div class="mdc-slider__track">
+            <div class="mdc-slider__track--inactive"></div>
+            <div class="mdc-slider__track--active">
+              <div class="mdc-slider__track--active_fill"></div>
+            </div>
+          </div>
+          <div class="mdc-slider__thumb">
+            <div class="mdc-slider__thumb-knob"></div>
+          </div>
+        </div>
+
+        <!-- boid settings -->
+
+        <!-- boid radius setting -->
+
+        <!-- boid appearance (triangle (& color) / image) setting -->
+
+        <!-- boid max speed -->
+
+        <!-- boid max force -->
+
+        <!-- boid view distance -->
+
+        <!-- borders settings -->
+
+        <!-- border effect distance setting -->
+
+        <!-- debug drawing settings -->
+
+        <!-- draw boid velocity -->
+
+        <!-- draw boid acceleration -->
+
+        <!-- draw boid field of view -->
+
+        <!-- draw boid search -->
+
+        <!-- draw border effect distance setting -->
+
       </div>
     </aside>
+
     <!-- drawer app content -->
     <div class="mdc-drawer-app-content">
+
       <!-- app bar -->
       <header class="mdc-top-app-bar mdc-top-app-bar--short mdc-top-app-bar--short-collapsed app-bar">
         <div class="mdc-top-app-bar__row">
           <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+
             <!-- drawer toggle button -->
             <button id="boids-settings-btn" class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button"
               data-mdc-ripple-is-unbounded aria-label="Settings">tune</button>
+
           </section>
         </div>
       </header>
+
       <!-- visible space -->
       <main id="visible-space"></main>
+
     </div>
   </body>
 </html>
