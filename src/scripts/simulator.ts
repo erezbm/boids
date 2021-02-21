@@ -3,11 +3,11 @@ import Boids from './boids';
 import RectBorders, { RectBordersSettings } from './borders';
 import { Mutable, OmitSafe, ReplacePropertyType } from './utils';
 
-type MutableSimulatorSettings = {
+type SimulatorSpecificSettings = {
   backgroundOpacity: number,
 };
 
-export type SimulatorSettings = Readonly<MutableSimulatorSettings & {
+export type SimulatorSettings = Readonly<SimulatorSpecificSettings & {
   numberOfBoids: number,
   boid: BoidSettings,
   borders: OmitSafe<RectBordersSettings, 'maxForce'>,
@@ -27,28 +27,18 @@ export default class Simulator {
   readonly #boids: Boids;
   readonly #borders: RectBorders;
 
-  #settings: MutableSimulatorSettings;
-  readonly #bordersSettings: Mutable<RectBordersSettings>;
-  readonly #boidSettings: Mutable<BoidSettings>;
+  #settings: SimulatorSpecificSettings = {} as any;
+  readonly #bordersSettings: Mutable<RectBordersSettings> = {} as any;
+  readonly #boidSettings: Mutable<BoidSettings> = {} as any;
 
   readonly #context: CanvasRenderingContext2D;
 
   constructor(canvas: HTMLCanvasElement, visibleSpace: Element, settings: SimulatorSettings) {
-    this.#settings = settings;
-
-    this.#bordersSettings = {
-      maxForce: 2 * settings.boid.maxForce,
-      effectDistance: settings.borders.effectDistance,
-      drawEffectDistance: settings.borders.drawEffectDistance,
-    };
     this.#borders = new RectBorders(visibleSpace, this.#bordersSettings);
-
-    this.#boidSettings = settings.boid;
     this.#boids = new Boids(this.#boidSettings);
-
-    this.#boids.setNumberOfBoids(settings.numberOfBoids, this.#borders.getFreeZone());
-
     this.#context = canvas.getContext('2d')!;
+
+    this.updateSettings(settings);
   }
 
   get settings(): SimulatorSettings {
@@ -85,7 +75,7 @@ export default class Simulator {
 
   updateSettings(settings: PartialSimulatorSettings) {
     const s = settings;
-    this.#settings = { ...this.#settings, ...settings };
+    if (s.backgroundOpacity !== undefined) this.#settings.backgroundOpacity = s.backgroundOpacity;
     if (s.boid !== undefined) this.updateBoidSettings(s.boid);
     if (s.borders !== undefined) this.updateBordersSettings(s.borders);
     // Update numberOfBoids after to take into account the new settings
@@ -96,7 +86,7 @@ export default class Simulator {
     Object.entries(boidSettings).forEach(([key, value]) => {
       if (value !== undefined) (this.#boidSettings as any)[key] = value;
     });
-    this.#bordersSettings.maxForce = 2 * this.#boidSettings.maxForce;
+    if (boidSettings.maxForce !== undefined) this.#bordersSettings.maxForce = 2 * boidSettings.maxForce;
   }
 
   private updateBordersSettings(bordersSettings: Partial<SimulatorSettings['borders']>) {
