@@ -7,6 +7,7 @@ import { MDCTextField } from '@material/textfield';
 import zaguriImageUrl from '/images/zaguri.png';
 import Simulator, { SimulatorSettings } from './simulator';
 import { AppearanceType } from './boid';
+import { toRadians } from './utils';
 
 // TODO implement FOV cone (might make the boids have V shape)
 // TODO spawn boids on mouse drag
@@ -37,6 +38,7 @@ function getSimulatorSettings(): SimulatorSettings {
       maxSpeed: boidMaxSpeed,
       maxForce: 1 * boidMaxSpeed,
       viewDistance: 100,
+      angleOfView: toRadians(360),
       radius: boidRadius,
       separationFactor: 1,
       alignmentFactor: 1,

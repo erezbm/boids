@@ -15,6 +15,7 @@ export type BoidSettings = Readonly<{
   maxForce: number,
   radius: number,
   viewDistance: number,
+  angleOfView: number,
   separationFactor: number,
   alignmentFactor: number,
   cohesionFactor: number,
@@ -56,7 +57,7 @@ export default class Boid {
   }
 
   calcNetForce(dt: number, boids: readonly Boid[], borders: RectBorders) {
-    const boidsInView = boids.filter((boid) => boid !== this && this.#position.distLTE(boid.#position, this.#settings.viewDistance));
+    const boidsInView = boids.filter((other) => other !== this && this.isInView(other));
 
     const seesBoids = boidsInView.length >= 1;
     if (seesBoids) this.#currentSearch = null;
@@ -65,6 +66,16 @@ export default class Boid {
     const externalAppliedForce = this.calcBordersForce(borders);
     // TODO dont add random force if they already broke the stalemate (velocity isnt pointing (or opposite...) to the other boids)
     return (boidsInView.length !== 1 ? selfAppliedForce : selfAppliedForce.add(Vector.randomMag(this.#settings.maxForce))).limitMag(this.#settings.maxForce).add(externalAppliedForce);
+  }
+
+  private isInView(other: Boid) {
+    if (!this.#position.distLTE(other.#position, this.#settings.viewDistance)) return false;
+    const angle = other.#position.sub(this.#position).angle();
+    const heading = this.#velocity.angle();
+    let diffAngle = ((angle - heading) + Math.PI) % Math.PI;
+    if (diffAngle > Math.PI) diffAngle -= 2 * Math.PI;
+    if (diffAngle < -Math.PI) diffAngle += 2 * Math.PI;
+    return -this.#settings.angleOfView / 2 <= diffAngle && diffAngle <= this.#settings.angleOfView / 2;
   }
 
   private calcFlockForce(boidsInView: Boid[], dt: number) {
