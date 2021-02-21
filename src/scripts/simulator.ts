@@ -87,6 +87,7 @@ export default class Simulator {
       if (value !== undefined) (this.#boidSettings as any)[key] = value;
     });
     if (boidSettings.maxForce !== undefined) this.#bordersSettings.maxForce = 2 * boidSettings.maxForce;
+    this.drawBackground(this.#context, 1);
   }
 
   private updateBordersSettings(bordersSettings: Partial<SimulatorSettings['borders']>) {
@@ -105,9 +106,9 @@ export default class Simulator {
     this.#boids.draw(context);
   }
 
-  private drawBackground(context: CanvasRenderingContext2D) {
+  private drawBackground(context: CanvasRenderingContext2D, alpha = this.#settings.backgroundOpacity) {
     const prevAlpha = context.globalAlpha;
-    context.globalAlpha = this.#settings.backgroundOpacity;
+    context.globalAlpha = alpha;
     context.fillStyle = '#222';
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
     context.globalAlpha = prevAlpha;
