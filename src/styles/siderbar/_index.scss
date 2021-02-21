@@ -10,6 +10,10 @@
 @use '@material/line-ripple/mdc-line-ripple';
 @use '@material/notched-outline/mdc-notched-outline';
 @use '@material/textfield';
+@use "@material/textfield/icon";
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
 
 @use './drawer-app-content-animation';
 @use '../disable-arrows';
@@ -19,6 +23,7 @@
 @include drawer.modal-core-styles;
 
 @include textfield.core-styles;
+@include icon.icon-core-styles;
 
 // Position the drawer-app-content next to the drawer, and the top-app-bar inside it
 body {

@@ -2,12 +2,16 @@ import { MDCTopAppBar } from '@material/top-app-bar';
 import { MDCRipple } from '@material/ripple';
 import { MDCDrawer } from '@material/drawer';
 import { MDCSlider } from '@material/slider';
-import { MDCTextField } from '@material/textfield';
+import { MDCTextField, MDCTextFieldIcon } from '@material/textfield';
+import { MDCMenu, MDCMenuItemComponentEvent } from '@material/menu';
 
 import zaguriImageUrl from '/images/zaguri.png';
 import Simulator, { SimulatorSettings } from './simulator';
 import { AppearanceType } from './boid';
 import { toRadians } from './utils';
+
+const zaguriImage = new Image();
+zaguriImage.src = zaguriImageUrl;
 
 // TODO implement FOV cone (might make the boids have V shape)
 // TODO spawn boids on mouse drag
@@ -29,11 +33,9 @@ simulator.start();
 function getSimulatorSettings(): SimulatorSettings {
   const boidMaxSpeed = 500;
   const boidRadius = 20;
-  const zaguriImage = new Image();
-  zaguriImage.src = zaguriImageUrl;
   return {
-    numberOfBoids: 100,
-    backgroundOpacity: 1,
+    numberOfBoids: 200,
+    backgroundOpacity: 0.1,
     boid: {
       maxSpeed: boidMaxSpeed,
       maxForce: 1 * boidMaxSpeed,
@@ -47,7 +49,7 @@ function getSimulatorSettings(): SimulatorSettings {
       desiredSeparationDistance: boidRadius * 2,
       searchTargetReachRadius: 15,
       maxSearchTime: 10,
-      appearance: { type: AppearanceType.Image, image: zaguriImage },
+      appearance: { type: AppearanceType.Triangle, color: 'rainbow' },
       drawVelocity: false,
       drawAcceleration: false,
       drawFieldOfView: false,
@@ -68,9 +70,16 @@ const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-setting
 const numberOfBoidsTextField = MDCTextField.attachTo(document.getElementById('number-of-boids-text-field')!);
 const numberOfBoidsSlider = MDCSlider.attachTo(document.getElementById('number-of-boids-slider')!);
 const backgroundOpacitySlider = MDCSlider.attachTo(document.getElementById('background-opacity-slider')!);
+const appearanceTypeMenu = MDCMenu.attachTo(document.getElementById('appearanc-type-menu')!);
+const appearanceTypeMenuTextField = MDCTextField.attachTo(document.getElementById('appearance-type-menu-text-field')!);
+const appearanceTypeMenuTextFieldIcon = MDCTextFieldIcon.attachTo(document.getElementById('appearance-type-menu-text-field-icon')!);
 
 numberOfBoidsTextField.value = simulator.settings.numberOfBoids.toString();
 numberOfBoidsSlider.setValue(simulator.settings.numberOfBoids);
+
+backgroundOpacitySlider.setValue(simulator.settings.backgroundOpacity);
+
+appearanceTypeMenuTextField.value = 'Rainbow';
 
 numberOfBoidsTextField.listen('input', () => {
   if (numberOfBoidsTextField.valid) {
@@ -88,6 +97,26 @@ numberOfBoidsSlider.listen('MDCSlider:input', () => {
 
 backgroundOpacitySlider.listen('MDCSlider:input', () => {
   simulator.updateSettings({ backgroundOpacity: backgroundOpacitySlider.getValue() });
+  console.log(backgroundOpacitySlider.getValue());
+  
+});
+
+appearanceTypeMenu.listen('MDCMenu:selected', (event: MDCMenuItemComponentEvent) => {
+  const appearanceType = event.detail.item.textContent!.trim();
+  if (appearanceType === 'Image') {
+    simulator.updateSettings({ boid: { appearance: { type: AppearanceType.Image, image: zaguriImage } } });
+  } else if (appearanceType === 'Triangle') {
+    simulator.updateSettings({ boid: { appearance: { type: AppearanceType.Triangle, color: '#0f0' } } });
+  } else if (appearanceType === 'Rainbow') {
+    simulator.updateSettings({ boid: { appearance: { type: AppearanceType.Triangle, color: 'rainbow' } } });
+  } else {
+    return;
+  }
+  appearanceTypeMenuTextField.value = appearanceType;
+});
+
+appearanceTypeMenuTextFieldIcon.listen('click', () => {
+  appearanceTypeMenu.open = true;
 });
 
 settingsButton.addEventListener('click', () => {

@@ -82,12 +82,50 @@
         <!-- boid radius setting -->
 
         <!-- boid appearance (triangle (& color) / image) setting -->
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="mdc-typography--body1" style="flex-shrink: 0; margin-right: 8px;">Appearance:</span>
 
-        <!-- boid max speed -->
+          <div class="mdc-menu-surface--anchor">
+            <!-- appearance type menu text field -->
+            <label id="appearance-type-menu-text-field"
+              class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label mdc-text-field--disabled mdc-text-field--with-trailing-icon">
+              <span class="mdc-notched-outline">
+                <span class="mdc-notched-outline__leading"></span>
+                <span class="mdc-notched-outline__trailing"></span>
+              </span>
+              <input class="mdc-text-field__input" type="text" value="Rainbow" readonly>
+              <i id="appearance-type-menu-text-field-icon"
+                class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing" tabindex="0"
+                role="button">arrow_drop_down</i>
+            </label>
 
-        <!-- boid max force -->
+            <!-- appearance type menu -->
+            <div id="appearanc-type-menu" class="mdc-menu mdc-menu-surface">
+              <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
+                <li class="mdc-list-item" role="menuitem">
+                  <span class="mdc-list-item__ripple"></span>
+                  <span class="mdc-list-item__text">Triangle</span>
+                </li>
+                <li class="mdc-list-item" role="menuitem">
+                  <span class="mdc-list-item__ripple"></span>
+                  <span class="mdc-list-item__text">Rainbow</span>
+                </li>
+                <li class="mdc-list-item" role="menuitem">
+                  <span class="mdc-list-item__ripple"></span>
+                  <span class="mdc-list-item__text">Image</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-        <!-- boid view distance -->
+        <!-- boid max speed setting -->
+
+        <!-- boid max force setting -->
+
+        <!-- boid view distance setting -->
+
+        <!-- boid angle of view setting -->
 
         <!-- borders settings -->
 

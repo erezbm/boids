@@ -23,7 +23,7 @@ export type BoidSettings = Readonly<{
   desiredFlockSpeed: number,
   searchTargetReachRadius: number,
   maxSearchTime: number,
-  appearance: { type: AppearanceType.Triangle, color: string; } | { type: AppearanceType.Image, image: CanvasImageSource; },
+  appearance: { type: AppearanceType.Triangle, color: string | 'rainbow'; } | { type: AppearanceType.Image, image: CanvasImageSource; },
   drawVelocity: boolean,
   drawAcceleration: boolean,
   drawFieldOfView: boolean,
@@ -40,6 +40,10 @@ export default class Boid {
   #position: Vector;
   #acceleration = new Vector();
   #velocity = new Vector();
+
+  // eslint-disable-next-line no-bitwise
+  // readonly #rainbowColor = `#${((1 << 24) * Math.random() | 0).toString(16)}`;
+  readonly #rainbowColor = Math.floor(Math.random() * 360);
 
   #currentSearch: CurrentSearch | null = null;
 
@@ -167,7 +171,8 @@ export default class Boid {
 
   private drawBody(ctx: CanvasRenderingContext2D) {
     if (this.#settings.appearance.type === AppearanceType.Triangle) {
-      ctx.strokeStyle = this.#settings.appearance.color;
+      const appearanceColor = this.#settings.appearance.color;
+      ctx.strokeStyle = appearanceColor !== 'rainbow' ? appearanceColor : `hsl(${this.#rainbowColor}, 100%, 50%)`;
       ctx.lineWidth = 1;
 
       ctx.save();
