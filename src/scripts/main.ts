@@ -97,8 +97,6 @@ numberOfBoidsSlider.listen('MDCSlider:input', () => {
 
 backgroundOpacitySlider.listen('MDCSlider:input', () => {
   simulator.updateSettings({ backgroundOpacity: backgroundOpacitySlider.getValue() });
-  console.log(backgroundOpacitySlider.getValue());
-  
 });
 
 appearanceTypeMenu.listen('MDCMenu:selected', (event: MDCMenuItemComponentEvent) => {
