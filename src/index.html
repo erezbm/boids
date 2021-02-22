@@ -85,34 +85,46 @@
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span class="mdc-typography--body1" style="flex-shrink: 0; margin-right: 8px;">Appearance:</span>
 
-          <div class="mdc-menu-surface--anchor">
-            <!-- appearance type menu text field -->
-            <label id="appearance-type-menu-text-field"
-              class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label mdc-text-field--disabled mdc-text-field--with-trailing-icon">
+          <div id="appearance-type-select" class="mdc-select mdc-select--outlined mdc-select--no-label">
+            <div class="mdc-select__anchor" aria-labelledby="outlined-select-label">
               <span class="mdc-notched-outline">
                 <span class="mdc-notched-outline__leading"></span>
                 <span class="mdc-notched-outline__trailing"></span>
               </span>
-              <input class="mdc-text-field__input" type="text" value="Rainbow" readonly>
-              <i id="appearance-type-menu-text-field-icon"
-                class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing" tabindex="0"
-                role="button">arrow_drop_down</i>
-            </label>
+              <span class="mdc-select__selected-text-container">
+                <span class="mdc-select__selected-text">Rainbow</span>
+              </span>
+              <span class="mdc-select__dropdown-icon">
+                <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">
+                  <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                    points="7 10 12 15 17 10">
+                  </polygon>
+                  <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                    points="7 15 12 10 17 15">
+                  </polygon>
+                </svg>
+              </span>
+            </div>
 
-            <!-- appearance type menu -->
-            <div id="appearanc-type-menu" class="mdc-menu mdc-menu-surface">
-              <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
-                <li class="mdc-list-item" role="menuitem">
+            <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+              <ul class="mdc-list" role="listbox">
+                <li class="mdc-list-item" data-value="triangle" role="option">
                   <span class="mdc-list-item__ripple"></span>
-                  <span class="mdc-list-item__text">Triangle</span>
+                  <span class="mdc-list-item__text">
+                    Triangle
+                  </span>
                 </li>
-                <li class="mdc-list-item" role="menuitem">
+                <li class="mdc-list-item mdc-list-item--selected" data-value="rainbow" role="option">
                   <span class="mdc-list-item__ripple"></span>
-                  <span class="mdc-list-item__text">Rainbow</span>
+                  <span class="mdc-list-item__text">
+                    Rainbow
+                  </span>
                 </li>
-                <li class="mdc-list-item" role="menuitem">
+                <li class="mdc-list-item" data-value="image" role="option">
                   <span class="mdc-list-item__ripple"></span>
-                  <span class="mdc-list-item__text">Image</span>
+                  <span class="mdc-list-item__text">
+                    Image
+                  </span>
                 </li>
               </ul>
             </div>

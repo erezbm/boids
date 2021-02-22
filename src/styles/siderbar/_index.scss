@@ -4,16 +4,17 @@
 );
 @use '@material/theme';
 
-@use '@material/slider/styles';
+@use '@material/slider/styles' as slider-styles;
 
 @use '@material/floating-label/mdc-floating-label';
 @use '@material/line-ripple/mdc-line-ripple';
 @use '@material/notched-outline/mdc-notched-outline';
 @use '@material/textfield';
-@use "@material/textfield/icon";
-@use "@material/list/mdc-list";
-@use "@material/menu-surface/mdc-menu-surface";
-@use "@material/menu/mdc-menu";
+@use '@material/list/mdc-list';
+@use '@material/menu-surface/mdc-menu-surface';
+@use '@material/menu/mdc-menu';
+@use '@material/select/styles' as select-styles;
+@use '@material/select';
 
 @use './drawer-app-content-animation';
 @use '../disable-arrows';
@@ -23,7 +24,6 @@
 @include drawer.modal-core-styles;
 
 @include textfield.core-styles;
-@include icon.icon-core-styles;
 
 // Position the drawer-app-content next to the drawer, and the top-app-bar inside it
 body {
@@ -54,4 +54,9 @@ body {
 
 .mdc-text-field--outlined {
   @include textfield.outlined-density(-4);
+}
+
+#appearance-type-select {
+  @include select.outlined-density(-4);
+  @include select.variable-width(150px);
 }

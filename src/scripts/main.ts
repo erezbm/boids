@@ -2,8 +2,8 @@ import { MDCTopAppBar } from '@material/top-app-bar';
 import { MDCRipple } from '@material/ripple';
 import { MDCDrawer } from '@material/drawer';
 import { MDCSlider } from '@material/slider';
-import { MDCTextField, MDCTextFieldIcon } from '@material/textfield';
-import { MDCMenu, MDCMenuItemComponentEvent } from '@material/menu';
+import { MDCTextField } from '@material/textfield';
+import { MDCSelect } from '@material/select';
 
 import zaguriImageUrl from '/images/zaguri.png';
 import Simulator, { SimulatorSettings } from './simulator';
@@ -13,7 +13,6 @@ import { toRadians } from './utils';
 const zaguriImage = new Image();
 zaguriImage.src = zaguriImageUrl;
 
-// TODO use mdc-select instead of textfield+menu
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
 // TODO add sidebar with:
@@ -69,16 +68,12 @@ const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-setting
 const numberOfBoidsTextField = MDCTextField.attachTo(document.getElementById('number-of-boids-text-field')!);
 const numberOfBoidsSlider = MDCSlider.attachTo(document.getElementById('number-of-boids-slider')!);
 const backgroundOpacitySlider = MDCSlider.attachTo(document.getElementById('background-opacity-slider')!);
-const appearanceTypeMenu = MDCMenu.attachTo(document.getElementById('appearanc-type-menu')!);
-const appearanceTypeMenuTextField = MDCTextField.attachTo(document.getElementById('appearance-type-menu-text-field')!);
-const appearanceTypeMenuTextFieldIcon = MDCTextFieldIcon.attachTo(document.getElementById('appearance-type-menu-text-field-icon')!);
+const appearanceTypeSelect = MDCSelect.attachTo(document.getElementById('appearance-type-select')!);
 
 numberOfBoidsTextField.value = getSimulatorSettings().numberOfBoids.toString();
 numberOfBoidsSlider.setValue(getSimulatorSettings().numberOfBoids);
 
 backgroundOpacitySlider.setValue(getSimulatorSettings().backgroundOpacity);
-
-appearanceTypeMenuTextField.value = 'Rainbow';
 
 numberOfBoidsTextField.listen('input', () => {
   if (numberOfBoidsTextField.valid) {
@@ -98,22 +93,15 @@ backgroundOpacitySlider.listen('MDCSlider:input', () => {
   simulator.changeSettings({ backgroundOpacity: backgroundOpacitySlider.getValue() });
 });
 
-appearanceTypeMenu.listen('MDCMenu:selected', (event: MDCMenuItemComponentEvent) => {
-  const appearanceType = event.detail.item.textContent!.trim();
-  if (appearanceType === 'Image') {
+appearanceTypeSelect.listen('MDCSelect:change', () => {
+  const appearanceType = appearanceTypeSelect.value;
+  if (appearanceType === 'image') {
     simulator.changeSettings({ boid: { appearance: { type: AppearanceType.Image, image: zaguriImage } } });
-  } else if (appearanceType === 'Triangle') {
+  } else if (appearanceType === 'triangle') {
     simulator.changeSettings({ boid: { appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Custom, value: '#0f0' } } } });
-  } else if (appearanceType === 'Rainbow') {
+  } else if (appearanceType === 'rainbow') {
     simulator.changeSettings({ boid: { appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Rainbow } } } });
-  } else {
-    return;
   }
-  appearanceTypeMenuTextField.value = appearanceType;
-});
-
-appearanceTypeMenuTextFieldIcon.listen('click', () => {
-  appearanceTypeMenu.open = true;
 });
 
 settingsButton.addEventListener('click', () => {
