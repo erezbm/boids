@@ -1,6 +1,6 @@
 import RectBorders from './borders';
 import Rectangle from './rectangle';
-import { mapRange, toRadians } from './utils';
+import { filterUndefinedProps, mapRange, toRadians } from './utils';
 import Vector from './vector';
 
 type CurrentSearch = {
@@ -9,6 +9,15 @@ type CurrentSearch = {
 };
 
 export enum AppearanceType { Triangle, Image }
+export enum AppearanceColorType { Custom, Rainbow }
+
+type AppearanceSetting = Readonly<{
+  type: AppearanceType.Triangle,
+  color: Readonly<{ type: AppearanceColorType.Custom, value: string, } | { type: AppearanceColorType.Rainbow, }>,
+} | {
+  type: AppearanceType.Image,
+  image: CanvasImageSource,
+}>;
 
 export type BoidSettings = Readonly<{
   maxSpeed: number,
@@ -23,26 +32,26 @@ export type BoidSettings = Readonly<{
   desiredFlockSpeed: number,
   searchTargetReachRadius: number,
   maxSearchTime: number,
-  appearance: { type: AppearanceType.Triangle, color: string | 'rainbow'; } | { type: AppearanceType.Image, image: CanvasImageSource; },
+  appearance: AppearanceSetting,
   drawVelocity: boolean,
   drawAcceleration: boolean,
   drawFieldOfView: boolean,
   drawSearch: boolean,
 }>;
 
+export type BoidSettingsChanges = Partial<BoidSettings>;
+
 type DebugInfo = {
   slowing: boolean,
 };
 
 export default class Boid {
-  readonly #settings: BoidSettings;
+  #settings: BoidSettings;
 
   #position: Vector;
   #acceleration = new Vector();
   #velocity = new Vector();
 
-  // eslint-disable-next-line no-bitwise
-  // readonly #rainbowColor = `#${((1 << 24) * Math.random() | 0).toString(16)}`;
   readonly #rainbowColor = Math.floor(Math.random() * 360);
 
   #currentSearch: CurrentSearch | null = null;
@@ -58,6 +67,10 @@ export default class Boid {
 
   static createInRandomPosition(rect: Rectangle, settings: BoidSettings) {
     return new Boid(Vector.randomInRect(rect.withPadding(settings.radius)), settings);
+  }
+
+  changeSettings(changes: BoidSettingsChanges) {
+    this.#settings = { ...this.#settings, ...filterUndefinedProps(changes) };
   }
 
   calcNetForce(dt: number, boids: readonly Boid[], borders: RectBorders) {
@@ -111,7 +124,7 @@ export default class Boid {
 
   private calcSearchForce(dt: number, borders: RectBorders) {
     this.#currentSearch ??= {
-      targetPosition: Vector.randomInRect(borders.getFreeZone()),
+      targetPosition: Vector.randomInRect(borders.getUnaffectedSpace()),
       timeRemaining: this.#settings.maxSearchTime,
     };
     return this.calcArriveForce(this.#currentSearch.targetPosition, dt);
@@ -172,7 +185,7 @@ export default class Boid {
   private drawBody(ctx: CanvasRenderingContext2D) {
     if (this.#settings.appearance.type === AppearanceType.Triangle) {
       const appearanceColor = this.#settings.appearance.color;
-      ctx.strokeStyle = appearanceColor !== 'rainbow' ? appearanceColor : `hsl(${this.#rainbowColor}, 100%, 50%)`;
+      ctx.strokeStyle = appearanceColor.type === AppearanceColorType.Custom ? appearanceColor.value : `hsl(${this.#rainbowColor}, 100%, 50%)`;
       ctx.lineWidth = 1;
 
       ctx.save();

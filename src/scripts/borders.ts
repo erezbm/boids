@@ -1,13 +1,16 @@
 import Border, { BorderSettings } from './border';
 import Rectangle from './rectangle';
+import { filterUndefinedProps } from './utils';
 import Vector from './vector';
 
 export type RectBordersSettings = BorderSettings & Readonly<{
   drawEffectDistance: boolean,
 }>;
 
+export type RectBordersSettingsChanges = Partial<RectBordersSettings>;
+
 export default class RectBorders {
-  readonly #settings: RectBordersSettings;
+  #settings: RectBordersSettings;
 
   #spaceRect = Rectangle.zero;
 
@@ -26,6 +29,13 @@ export default class RectBorders {
     ] as const;
   }
 
+  changeSettings(changes: RectBordersSettingsChanges) {
+    this.#settings = { ...this.#settings, ...filterUndefinedProps(changes) };
+    this.#borders.forEach((border) => {
+      border.changeSettings(changes);
+    });
+  }
+
   // TODO abstract figuring the space rect of the world into a mutable class and use it here and everywhere else
   getSpaceRect() { return this.#spaceRect; }
   setSpaceFromRect(spaceRect: Rectangle) { this.#spaceRect = spaceRect; }
@@ -39,7 +49,7 @@ export default class RectBorders {
     updateSpace();
   }
 
-  getFreeZone() { return this.#spaceRect.withPadding(this.#settings.effectDistance); }
+  getUnaffectedSpace() { return this.#spaceRect.withPadding(this.#settings.effectDistance); }
 
   calcForce(position: Vector, radius: number) {
     return this.#borders

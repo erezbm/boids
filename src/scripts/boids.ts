@@ -1,15 +1,22 @@
-import Boid, { BoidSettings } from './boid';
+import Boid, { BoidSettings, BoidSettingsChanges } from './boid';
 import RectBorders from './borders';
 import Rectangle from './rectangle';
+import { filterUndefinedProps } from './utils';
 
 export default class Boids {
-  // TODO use a quadtree instead for performance
   #boids: Boid[] = [];
 
-  readonly #boidSettings: BoidSettings;
+  #boidSettings: BoidSettings;
 
   constructor(boidSettings: BoidSettings) {
     this.#boidSettings = boidSettings;
+  }
+
+  changeSettings(changes: BoidSettingsChanges) {
+    this.#boidSettings = { ...this.#boidSettings, ...filterUndefinedProps(changes) };
+    this.#boids.forEach((boid) => {
+      boid.changeSettings(changes);
+    });
   }
 
   get numberOfBoids() { return this.#boids.length; }

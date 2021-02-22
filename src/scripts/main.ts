@@ -7,13 +7,13 @@ import { MDCMenu, MDCMenuItemComponentEvent } from '@material/menu';
 
 import zaguriImageUrl from '/images/zaguri.png';
 import Simulator, { SimulatorSettings } from './simulator';
-import { AppearanceType } from './boid';
+import { AppearanceColorType, AppearanceType } from './boid';
 import { toRadians } from './utils';
 
 const zaguriImage = new Image();
 zaguriImage.src = zaguriImageUrl;
 
-// TODO implement FOV cone (might make the boids have V shape)
+// TODO use mdc-select instead of textfield+menu
 // TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
 // TODO add sidebar with:
@@ -22,7 +22,6 @@ zaguriImage.src = zaguriImageUrl;
 // - inputs/checkboxes for the remaining settings
 // TODO getting initial settings from url parameters, and add copy url with settings button
 // TODO persist settings with cookies
-// TODO rainbow colored boids
 
 const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
 const visibleSpace = document.getElementById('visible-space')!;
@@ -49,7 +48,7 @@ function getSimulatorSettings(): SimulatorSettings {
       desiredSeparationDistance: boidRadius * 2,
       searchTargetReachRadius: 15,
       maxSearchTime: 10,
-      appearance: { type: AppearanceType.Triangle, color: 'rainbow' },
+      appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Rainbow } },
       drawVelocity: false,
       drawAcceleration: false,
       drawFieldOfView: false,
@@ -74,10 +73,10 @@ const appearanceTypeMenu = MDCMenu.attachTo(document.getElementById('appearanc-t
 const appearanceTypeMenuTextField = MDCTextField.attachTo(document.getElementById('appearance-type-menu-text-field')!);
 const appearanceTypeMenuTextFieldIcon = MDCTextFieldIcon.attachTo(document.getElementById('appearance-type-menu-text-field-icon')!);
 
-numberOfBoidsTextField.value = simulator.settings.numberOfBoids.toString();
-numberOfBoidsSlider.setValue(simulator.settings.numberOfBoids);
+numberOfBoidsTextField.value = getSimulatorSettings().numberOfBoids.toString();
+numberOfBoidsSlider.setValue(getSimulatorSettings().numberOfBoids);
 
-backgroundOpacitySlider.setValue(simulator.settings.backgroundOpacity);
+backgroundOpacitySlider.setValue(getSimulatorSettings().backgroundOpacity);
 
 appearanceTypeMenuTextField.value = 'Rainbow';
 
@@ -85,28 +84,28 @@ numberOfBoidsTextField.listen('input', () => {
   if (numberOfBoidsTextField.valid) {
     const n = Number(numberOfBoidsTextField.value);
     numberOfBoidsSlider.setValue(n);
-    simulator.updateSettings({ numberOfBoids: n });
+    simulator.changeSettings({ numberOfBoids: n });
   }
 });
 
 numberOfBoidsSlider.listen('MDCSlider:input', () => {
   const n = numberOfBoidsSlider.getValue();
   numberOfBoidsTextField.value = n.toString();
-  simulator.updateSettings({ numberOfBoids: n });
+  simulator.changeSettings({ numberOfBoids: n });
 });
 
 backgroundOpacitySlider.listen('MDCSlider:input', () => {
-  simulator.updateSettings({ backgroundOpacity: backgroundOpacitySlider.getValue() });
+  simulator.changeSettings({ backgroundOpacity: backgroundOpacitySlider.getValue() });
 });
 
 appearanceTypeMenu.listen('MDCMenu:selected', (event: MDCMenuItemComponentEvent) => {
   const appearanceType = event.detail.item.textContent!.trim();
   if (appearanceType === 'Image') {
-    simulator.updateSettings({ boid: { appearance: { type: AppearanceType.Image, image: zaguriImage } } });
+    simulator.changeSettings({ boid: { appearance: { type: AppearanceType.Image, image: zaguriImage } } });
   } else if (appearanceType === 'Triangle') {
-    simulator.updateSettings({ boid: { appearance: { type: AppearanceType.Triangle, color: '#0f0' } } });
+    simulator.changeSettings({ boid: { appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Custom, value: '#0f0' } } } });
   } else if (appearanceType === 'Rainbow') {
-    simulator.updateSettings({ boid: { appearance: { type: AppearanceType.Triangle, color: 'rainbow' } } });
+    simulator.changeSettings({ boid: { appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Rainbow } } } });
   } else {
     return;
   }
