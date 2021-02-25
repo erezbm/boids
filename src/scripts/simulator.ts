@@ -37,8 +37,8 @@ export default class Simulator {
     this.changeSettings(settings);
   }
 
-  changeSettings(settings: SimulatorSettingsChanges) {
-    const { numberOfBoids, backgroundOpacity, boid, borders } = settings;
+  changeSettings(changes: SimulatorSettingsChanges) {
+    const { numberOfBoids, backgroundOpacity, boid, borders } = changes;
 
     if (backgroundOpacity !== undefined) this.#mySettings = { ...this.#mySettings, backgroundOpacity };
     if (boid !== undefined) {
