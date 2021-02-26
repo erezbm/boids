@@ -27,12 +27,18 @@ export class SidebarView implements ISidebarView {
     const numberOfBoidsTextField = MDCTextField.attachTo(document.getElementById('number-of-boids-text-field')!);
     const numberOfBoidsSlider = MDCSlider.attachTo(document.getElementById('number-of-boids-slider')!);
     const backgroundOpacitySlider = MDCSlider.attachTo(document.getElementById('background-opacity-slider')!);
+    const boidRadiusSlider = MDCSlider.attachTo(document.getElementById('boid-radius-slider')!);
     const appearanceTypeSelect = MDCSelect.attachTo(document.getElementById('appearance-type-select')!);
+    const boidMaxSpeedSlider = MDCSlider.attachTo(document.getElementById('boid-max-speed-slider')!);
 
     numberOfBoidsTextField.value = settings.numberOfBoids.toString();
     numberOfBoidsSlider.setValue(settings.numberOfBoids);
 
     backgroundOpacitySlider.setValue(settings.backgroundOpacity);
+
+    boidRadiusSlider.setValue(settings.boid.radius);
+
+    boidMaxSpeedSlider.setValue(settings.boid.maxSpeed);
 
     numberOfBoidsTextField.listen('input', () => {
       if (numberOfBoidsTextField.valid) {
@@ -52,6 +58,14 @@ export class SidebarView implements ISidebarView {
       this.#handler({ backgroundOpacity: backgroundOpacitySlider.getValue() });
     });
 
+    boidRadiusSlider.listen('MDCSlider:input', () => {
+      this.#handler({ boid: { radius: boidRadiusSlider.getValue() } });
+    });
+
+    boidMaxSpeedSlider.listen('MDCSlider:input', () => {
+      this.#handler({ boid: { maxSpeed: boidMaxSpeedSlider.getValue() } });
+    });
+
     appearanceTypeSelect.listen('MDCSelect:change', () => {
       const appearanceType = appearanceTypeSelect.value;
       if (appearanceType === 'image') {
@@ -69,6 +83,8 @@ export class SidebarView implements ISidebarView {
     document.body.addEventListener('MDCDrawer:opened', () => {
       numberOfBoidsSlider.layout();
       backgroundOpacitySlider.layout();
+      boidRadiusSlider.layout();
+      boidMaxSpeedSlider.layout();
     });
   }
 

@@ -80,6 +80,21 @@
         <!-- boid settings -->
 
         <!-- boid radius setting -->
+        <span class="mdc-typography--body1" style="flex-shrink: 0;">Boid radius:</span>
+
+        <!-- boid radius slider -->
+        <div id="boid-radius-slider" class="mdc-slider" style="margin-inline: 0;">
+          <input class="mdc-slider__input" type="range" min="1" max="100" step="1" value="20">
+          <div class="mdc-slider__track">
+            <div class="mdc-slider__track--inactive"></div>
+            <div class="mdc-slider__track--active">
+              <div class="mdc-slider__track--active_fill"></div>
+            </div>
+          </div>
+          <div class="mdc-slider__thumb">
+            <div class="mdc-slider__thumb-knob"></div>
+          </div>
+        </div>
 
         <!-- boid appearance (triangle (& color) / image) setting -->
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -132,6 +147,21 @@
         </div>
 
         <!-- boid max speed setting -->
+        <span class="mdc-typography--body1" style="flex-shrink: 0;">Boid max speed:</span>
+
+        <!-- boid max speed slider -->
+        <div id="boid-max-speed-slider" class="mdc-slider" style="margin-inline: 0;">
+          <input class="mdc-slider__input" type="range" min="0" max="2000" step="10" value="500">
+          <div class="mdc-slider__track">
+            <div class="mdc-slider__track--inactive"></div>
+            <div class="mdc-slider__track--active">
+              <div class="mdc-slider__track--active_fill"></div>
+            </div>
+          </div>
+          <div class="mdc-slider__thumb">
+            <div class="mdc-slider__thumb-knob"></div>
+          </div>
+        </div>
 
         <!-- boid max force setting -->
 

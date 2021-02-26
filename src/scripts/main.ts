@@ -24,7 +24,29 @@ const simulator = new Simulator(canvas, visibleSpace, settings);
 simulator.start();
 
 const sidebarView: ISidebarView = new SidebarView(settings);
-sidebarView.onSettingsChanged((changes) => simulator.changeSettings(changes));
+sidebarView.onSettingsChanged((changes) => {
+  let actualChanges = changes;
+  if (changes.boid?.radius !== undefined) {
+    actualChanges = {
+      ...actualChanges,
+      boid: {
+        ...actualChanges.boid,
+        desiredSeparationDistance: 2 * changes.boid.radius,
+      },
+    };
+  }
+  if (changes.boid?.maxSpeed !== undefined) {
+    actualChanges = {
+      ...actualChanges,
+      boid: {
+        ...actualChanges.boid,
+        maxForce: 1 * changes.boid.maxSpeed,
+        desiredFlockSpeed: changes.boid.maxSpeed / 2,
+      },
+    };
+  }
+  simulator.changeSettings(actualChanges);
+});
 
 function getSimulatorSettings(): SimulatorSettings {
   const boidMaxSpeed = 500;
