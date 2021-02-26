@@ -24,20 +24,21 @@ export class SidebarView implements ISidebarView {
     const settingsButton = document.getElementById('boids-settings-btn') as HTMLButtonElement;
     MDCRipple.attachTo(settingsButton);
     const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-settings-drawer')!);
+
     const numberOfBoidsTextField = MDCTextField.attachTo(document.getElementById('number-of-boids-text-field')!);
     const numberOfBoidsSlider = MDCSlider.attachTo(document.getElementById('number-of-boids-slider')!);
     const backgroundOpacitySlider = MDCSlider.attachTo(document.getElementById('background-opacity-slider')!);
+    const backgroundColorTextField = MDCTextField.attachTo(document.getElementById('background-color-text-field')!);
     const boidRadiusSlider = MDCSlider.attachTo(document.getElementById('boid-radius-slider')!);
     const appearanceTypeSelect = MDCSelect.attachTo(document.getElementById('appearance-type-select')!);
     const boidMaxSpeedSlider = MDCSlider.attachTo(document.getElementById('boid-max-speed-slider')!);
 
     numberOfBoidsTextField.value = settings.numberOfBoids.toString();
     numberOfBoidsSlider.setValue(settings.numberOfBoids);
-
     backgroundOpacitySlider.setValue(settings.backgroundOpacity);
-
+    backgroundColorTextField.value = settings.backgroundColor;
     boidRadiusSlider.setValue(settings.boid.radius);
-
+    appearanceTypeSelect.selectedIndex = 1;
     boidMaxSpeedSlider.setValue(settings.boid.maxSpeed);
 
     numberOfBoidsTextField.listen('input', () => {
@@ -58,12 +59,12 @@ export class SidebarView implements ISidebarView {
       this.#handler({ backgroundOpacity: backgroundOpacitySlider.getValue() });
     });
 
-    boidRadiusSlider.listen('MDCSlider:input', () => {
-      this.#handler({ boid: { radius: boidRadiusSlider.getValue() } });
+    backgroundColorTextField.listen('input', () => {
+      this.#handler({ backgroundColor: backgroundColorTextField.value });
     });
 
-    boidMaxSpeedSlider.listen('MDCSlider:input', () => {
-      this.#handler({ boid: { maxSpeed: boidMaxSpeedSlider.getValue() } });
+    boidRadiusSlider.listen('MDCSlider:input', () => {
+      this.#handler({ boid: { radius: boidRadiusSlider.getValue() } });
     });
 
     appearanceTypeSelect.listen('MDCSelect:change', () => {
@@ -77,9 +78,14 @@ export class SidebarView implements ISidebarView {
       }
     });
 
+    boidMaxSpeedSlider.listen('MDCSlider:input', () => {
+      this.#handler({ boid: { maxSpeed: boidMaxSpeedSlider.getValue() } });
+    });
+
     settingsButton.addEventListener('click', () => {
       settingsDrawer.open = !settingsDrawer.open;
     });
+
     document.body.addEventListener('MDCDrawer:opened', () => {
       numberOfBoidsSlider.layout();
       backgroundOpacitySlider.layout();

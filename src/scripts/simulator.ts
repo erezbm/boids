@@ -5,6 +5,7 @@ import { OmitSafe } from './utils';
 
 type MySettings = Readonly<{
   backgroundOpacity: number,
+  backgroundColor: string,
 }>;
 
 type SimulatorSettingsT<T, U extends RectBordersSettings | RectBordersSettingsChanges> = MySettings & Readonly<{
@@ -38,9 +39,10 @@ export default class Simulator {
   }
 
   changeSettings(changes: SimulatorSettingsChanges) {
-    const { numberOfBoids, backgroundOpacity, boid, borders } = changes;
+    const { numberOfBoids, backgroundOpacity, backgroundColor, boid, borders } = changes;
 
     if (backgroundOpacity !== undefined) this.#mySettings = { ...this.#mySettings, backgroundOpacity };
+    if (backgroundColor !== undefined) this.#mySettings = { ...this.#mySettings, backgroundColor };
     if (boid !== undefined) {
       this.#boids.changeSettings(boid);
       if (boid.maxForce !== undefined) this.#borders.changeSettings({ maxForce: 2 * boid.maxForce });
@@ -87,7 +89,7 @@ export default class Simulator {
   private drawBackground(context: CanvasRenderingContext2D, alpha = this.#mySettings.backgroundOpacity) {
     const prevAlpha = context.globalAlpha;
     context.globalAlpha = alpha;
-    context.fillStyle = '#222';
+    context.fillStyle = this.#mySettings.backgroundColor;
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
     context.globalAlpha = prevAlpha;
   }

@@ -3,7 +3,6 @@ import { AppearanceColorType, AppearanceType } from './boid';
 import { toRadians } from './utils';
 import { ISidebarView, SidebarView } from './views/sidebar';
 
-// TODO spawn boids on mouse drag
 // TODO make boids flee from mouse
 // TODO add sidebar with:
 // - restart button
@@ -54,6 +53,7 @@ function getSimulatorSettings(): SimulatorSettings {
   return {
     numberOfBoids: 200,
     backgroundOpacity: 0.1,
+    backgroundColor: '#222',
     boid: {
       maxSpeed: boidMaxSpeed,
       maxForce: 1 * boidMaxSpeed,
