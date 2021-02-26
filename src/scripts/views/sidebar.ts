@@ -6,7 +6,9 @@ import { MDCTextField } from '@material/textfield';
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { AppearanceColorType, AppearanceType } from '../boid';
 import { SimulatorSettings, SimulatorSettingsChanges } from '../simulator';
-import zaguriImageUrl from '/images/zaguri.png';
+import { isWebpSupported } from '../utils';
+import zaguriPngUrl from '/images/zaguri.png';
+import zaguriWebpUrl from '/images/zaguri.webp';
 
 export type SettingsChangedHandler = (changes: SimulatorSettingsChanges) => void;
 export interface ISidebarView {
@@ -14,7 +16,7 @@ export interface ISidebarView {
 }
 
 const zaguriImage = new Image();
-zaguriImage.src = zaguriImageUrl;
+zaguriImage.src = isWebpSupported() ? zaguriWebpUrl : zaguriPngUrl;
 
 export class SidebarView implements ISidebarView {
   #handler: SettingsChangedHandler = () => { };
