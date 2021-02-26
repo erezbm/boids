@@ -86,7 +86,7 @@ export default class Boid {
   }
 
   private isInView(other: Boid) {
-    if (!this.#position.distLTE(other.#position, this.#settings.viewDistance)) return false;
+    if (!this.#position.distLTE(other.#position, 2 * this.#settings.radius + this.#settings.viewDistance)) return false;
     const angle = other.#position.sub(this.#position).angle();
     const heading = this.#velocity.angle();
     let diffAngle = ((angle - heading) + Math.PI) % Math.PI;
@@ -244,7 +244,7 @@ export default class Boid {
     ctx.lineWidth = 1;
 
     ctx.beginPath();
-    ctx.arc(this.#position.x, this.#position.y, this.#settings.viewDistance, 0, 2 * Math.PI);
+    ctx.arc(this.#position.x, this.#position.y, this.#settings.radius + this.#settings.viewDistance, 0, 2 * Math.PI);
 
     ctx.stroke();
   }
