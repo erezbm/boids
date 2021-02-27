@@ -23,8 +23,10 @@ export class SidebarView implements ISidebarView {
 
   constructor(settings: SimulatorSettings) {
     MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar')!);
-    const settingsButton = document.getElementById('boids-settings-btn') as HTMLButtonElement;
-    MDCRipple.attachTo(settingsButton);
+    const toggleSettingsButton = document.getElementById('toggle-settings-btn') as HTMLButtonElement;
+    MDCRipple.attachTo(toggleSettingsButton);
+    const closeSettingsButton = document.getElementById('close-settings-btn') as HTMLButtonElement;
+    MDCRipple.attachTo(closeSettingsButton);
     const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-settings-drawer')!);
 
     const numberOfBoidsTextField = MDCTextField.attachTo(document.getElementById('number-of-boids-text-field')!);
@@ -84,8 +86,12 @@ export class SidebarView implements ISidebarView {
       this.#handler({ boid: { maxSpeed: boidMaxSpeedSlider.getValue() } });
     });
 
-    settingsButton.addEventListener('click', () => {
+    toggleSettingsButton.addEventListener('click', () => {
       settingsDrawer.open = !settingsDrawer.open;
+    });
+
+    closeSettingsButton.addEventListener('click', () => {
+      settingsDrawer.open = false;
     });
 
     document.body.addEventListener('MDCDrawer:opened', () => {

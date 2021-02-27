@@ -22,8 +22,9 @@
     <!-- drawer -->
     <aside id="boids-settings-drawer" class="mdc-drawer mdc-drawer--dismissible">
 
-      <div class="mdc-drawer__header">
-        <h3 class="mdc-drawer__title">Settings</h3>
+      <div class="mdc-drawer__header" style="display: flex; justify-content: space-between; align-items: center; padding-right: 0;">
+        <h3 class="mdc-drawer__title" style="margin-bottom: 0;">Settings</h3>
+        <button id="close-settings-btn" class="material-icons mdc-icon-button" data-mdc-ripple-is-unbounded>close</button>
       </div>
 
       <div class="mdc-drawer__content" style="padding: 0 24px;">
@@ -114,7 +115,7 @@
           <span class="mdc-typography--body1" style="flex-shrink: 0; margin-right: 8px;">Appearance:</span>
 
           <div id="appearance-type-select" class="mdc-select mdc-select--outlined mdc-select--no-label">
-            <div class="mdc-select__anchor" aria-labelledby="outlined-select-label">
+            <div class="mdc-select__anchor">
               <span class="mdc-notched-outline">
                 <span class="mdc-notched-outline__leading"></span>
                 <span class="mdc-notched-outline__trailing"></span>
@@ -210,8 +211,8 @@
           <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
 
             <!-- drawer toggle button -->
-            <button id="boids-settings-btn" class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button"
-              data-mdc-ripple-is-unbounded aria-label="Settings">tune</button>
+            <button id="toggle-settings-btn" class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button"
+              data-mdc-ripple-is-unbounded>tune</button>
 
           </section>
         </div>
