@@ -38,7 +38,7 @@ export class SidebarView implements ISidebarView {
     const boidMaxSpeedSlider = MDCSlider.attachTo(document.getElementById('boid-max-speed-slider')!);
 
     numberOfBoidsTextField.value = settings.numberOfBoids.toString();
-    numberOfBoidsSlider.setValue(settings.numberOfBoids);
+    numberOfBoidsSlider.setValue(Math.sqrt(settings.numberOfBoids));
     backgroundOpacitySlider.setValue(settings.backgroundOpacity);
     backgroundColorTextField.value = settings.backgroundColor;
     boidRadiusSlider.setValue(settings.boid.radius);
@@ -48,13 +48,13 @@ export class SidebarView implements ISidebarView {
     numberOfBoidsTextField.listen('input', () => {
       if (numberOfBoidsTextField.valid) {
         const n = Number(numberOfBoidsTextField.value);
-        numberOfBoidsSlider.setValue(n);
+        numberOfBoidsSlider.setValue(Math.sqrt(n));
         this.#handler({ numberOfBoids: n });
       }
     });
 
     numberOfBoidsSlider.listen('MDCSlider:input', () => {
-      const n = numberOfBoidsSlider.getValue();
+      const n = Math.round(numberOfBoidsSlider.getValue() ** 2);
       numberOfBoidsTextField.value = n.toString();
       this.#handler({ numberOfBoids: n });
     });
