@@ -1,6 +1,7 @@
 import { BoidSettings, BoidSettingsChanges } from './boid';
 import Boids from './boids';
 import RectBorders, { RectBordersSettings, RectBordersSettingsChanges } from './borders';
+import Mouse, { MouseSettings, MouseSettingsChanges } from './mouse';
 import { OmitSafe } from './utils';
 
 type MySettings = {
@@ -8,38 +9,37 @@ type MySettings = {
   backgroundColor: string,
 };
 
-type SimulatorSettingsT<T, U extends RectBordersSettings | RectBordersSettingsChanges> = Readonly<MySettings> & Readonly<{
+type SimulatorSettingsOrChanges<IsSettings extends boolean> = Readonly<MySettings> & Readonly<{
   numberOfBoids: number,
-  boid: T,
-  borders: OmitSafe<U, 'maxForce'>,
+  boid: IsSettings extends true ? BoidSettings : BoidSettingsChanges,
+  borders: OmitSafe<IsSettings extends true ? RectBordersSettings : RectBordersSettingsChanges, 'maxForce'>,
+  mouse: IsSettings extends true ? MouseSettings : MouseSettingsChanges,
 }>;
 
-export type SimulatorSettings = SimulatorSettingsT<BoidSettings, RectBordersSettings>;
+export type SimulatorSettings = SimulatorSettingsOrChanges<true>;
 
-/* eslint-disable @typescript-eslint/indent */
-export type SimulatorSettingsChanges = Partial<
-  SimulatorSettingsT<BoidSettingsChanges, RectBordersSettingsChanges>
->;
-/* eslint-enable @typescript-eslint/indent */
+export type SimulatorSettingsChanges = Partial<SimulatorSettingsOrChanges<false>>;
 
 export default class Simulator {
   readonly #boids: Boids;
   readonly #borders: RectBorders;
+  readonly #mouse: Mouse;
 
   #mySettings: MySettings = {} as any;
 
   readonly #context: CanvasRenderingContext2D;
 
-  constructor(canvas: HTMLCanvasElement, visibleSpace: Element, settings: SimulatorSettings) {
+  constructor(canvas: HTMLCanvasElement, visibleSpace: HTMLElement, settings: SimulatorSettings) {
     this.#borders = new RectBorders(visibleSpace, {} as any);
     this.#boids = new Boids({} as any);
+    this.#mouse = new Mouse(visibleSpace, {} as any);
     this.#context = canvas.getContext('2d')!;
 
     this.changeSettings(settings);
   }
 
   changeSettings(changes: SimulatorSettingsChanges) {
-    const { numberOfBoids, backgroundOpacity, backgroundColor, boid, borders } = changes;
+    const { numberOfBoids, backgroundOpacity, backgroundColor, boid, borders, mouse } = changes;
 
     if (backgroundOpacity !== undefined) this.#mySettings.backgroundOpacity = backgroundOpacity;
     if (backgroundColor !== undefined) this.#mySettings.backgroundColor = backgroundColor;
@@ -49,6 +49,7 @@ export default class Simulator {
       if (boid.appearance !== undefined) this.drawBackground(this.#context, 1);
     }
     if (borders !== undefined) this.#borders.changeSettings(borders);
+    if (mouse !== undefined) this.#mouse.changeSettings(mouse);
     // Update numberOfBoids after to take into account the new settings
     if (numberOfBoids !== undefined) this.#boids.setNumberOfBoids(numberOfBoids, this.#borders.getUnaffectedSpace());
   }
@@ -84,6 +85,7 @@ export default class Simulator {
     this.drawBackground(context);
     this.#borders.draw(context);
     this.#boids.draw(context);
+    this.#mouse.draw(context);
   }
 
   private drawBackground(context: CanvasRenderingContext2D, alpha = this.#mySettings.backgroundOpacity) {

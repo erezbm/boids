@@ -77,5 +77,9 @@ function getSimulatorSettings(): SimulatorSettings {
       effectDistance: 50,
       drawEffectDistance: false,
     },
+    mouse: {
+      color: 'orange',
+      radius: 10,
+    },
   };
 }
