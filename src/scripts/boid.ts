@@ -79,10 +79,12 @@ export default class Boid {
     const seesBoids = boidsInView.length >= 1;
     if (seesBoids) this.#currentSearch = null;
 
-    const selfAppliedForce = seesBoids ? this.calcFlockForce(boidsInView, dt) : this.calcSearchForce(dt, borders);
+    let selfAppliedForce = seesBoids ? this.calcFlockForce(boidsInView, dt) : this.calcSearchForce(dt, borders);
+    if (boidsInView.length === 1 && this.isInStalemateWith(boidsInView[0])) {
+      selfAppliedForce = selfAppliedForce.add(Vector.randomMag(this.#settings.maxForce));
+    }
     const externalAppliedForce = this.calcBordersForce(borders);
-    // TODO dont add random force if they already broke the stalemate (velocity isnt pointing (or opposite...) to the other boids)
-    return (boidsInView.length !== 1 ? selfAppliedForce : selfAppliedForce.add(Vector.randomMag(this.#settings.maxForce))).limitMag(this.#settings.maxForce).add(externalAppliedForce);
+    return selfAppliedForce.limitMag(this.#settings.maxForce).add(externalAppliedForce);
   }
 
   private isInView(other: Boid) {
@@ -93,6 +95,10 @@ export default class Boid {
     if (diffAngle > Math.PI) diffAngle -= 2 * Math.PI;
     if (diffAngle < -Math.PI) diffAngle += 2 * Math.PI;
     return -this.#settings.angleOfView / 2 <= diffAngle && diffAngle <= this.#settings.angleOfView / 2;
+  }
+
+  private isInStalemateWith(other: Boid) {
+    return this.#velocity.angle() === other.#velocity.neg().angle();
   }
 
   private calcFlockForce(boidsInView: Boid[], dt: number) {

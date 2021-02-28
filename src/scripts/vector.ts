@@ -17,11 +17,13 @@ export default class Vector {
 
   add(v: Vector) { return new Vector(this.x + v.x, this.y + v.y); }
 
-  sub(v: Vector) { return this.add(v.mult(-1)); }
+  sub(v: Vector) { return this.add(v.neg()); }
 
   mult(n: number) { return new Vector(this.x * n, this.y * n); }
 
   div(n: number) { return this.mult(1 / n); }
+
+  neg() { return this.mult(-1); }
 
   mag() { return Math.sqrt(this.magSquared()); }
 
