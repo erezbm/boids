@@ -33,6 +33,8 @@ export class SidebarView implements ISidebarView {
     const numberOfBoidsSlider = MDCSlider.attachTo(document.getElementById('number-of-boids-slider')!);
     const backgroundOpacitySlider = MDCSlider.attachTo(document.getElementById('background-opacity-slider')!);
     const backgroundColorTextField = MDCTextField.attachTo(document.getElementById('background-color-text-field')!);
+    const backgroundColorInput = document.getElementById('background-color-input') as HTMLInputElement;
+    const backgroundColorInputWrapper = document.getElementById('background-color-input-wrapper')!;
     const boidRadiusSlider = MDCSlider.attachTo(document.getElementById('boid-radius-slider')!);
     const appearanceTypeSelect = MDCSelect.attachTo(document.getElementById('appearance-type-select')!);
     const boidMaxSpeedSlider = MDCSlider.attachTo(document.getElementById('boid-max-speed-slider')!);
@@ -41,6 +43,8 @@ export class SidebarView implements ISidebarView {
     numberOfBoidsSlider.setValue(Math.sqrt(settings.numberOfBoids));
     backgroundOpacitySlider.setValue(settings.backgroundOpacity);
     backgroundColorTextField.value = settings.backgroundColor;
+    backgroundColorInput.value = settings.backgroundColor;
+    backgroundColorInputWrapper.style.backgroundColor = settings.backgroundColor;
     boidRadiusSlider.setValue(settings.boid.radius);
     appearanceTypeSelect.selectedIndex = 1;
     boidMaxSpeedSlider.setValue(settings.boid.maxSpeed);
@@ -64,7 +68,17 @@ export class SidebarView implements ISidebarView {
     });
 
     backgroundColorTextField.listen('input', () => {
-      this.#handler({ backgroundColor: backgroundColorTextField.value });
+      const backgroundColor = backgroundColorTextField.value;
+      backgroundColorInput.value = backgroundColor;
+      backgroundColorInputWrapper.style.backgroundColor = backgroundColor;
+      this.#handler({ backgroundColor });
+    });
+
+    backgroundColorInput.addEventListener('input', () => {
+      const backgroundColor = backgroundColorInput.value;
+      backgroundColorTextField.value = backgroundColor;
+      backgroundColorInputWrapper.style.backgroundColor = backgroundColor;
+      this.#handler({ backgroundColor });
     });
 
     boidRadiusSlider.listen('MDCSlider:input', () => {

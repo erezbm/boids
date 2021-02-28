@@ -56,6 +56,18 @@ body {
   @include textfield.outlined-density(-4);
 }
 
+.color-picker {
+  border-radius: 50%; border: 1px solid #666;
+
+  &:hover {
+    border-color: lighten($color: #666, $amount: 50%);
+  }
+
+  &:focus-within {
+    border-color: theme.$primary;
+  }
+}
+
 #appearance-type-select {
   @include select.outlined-density(-4);
   @include select.variable-width(150px);

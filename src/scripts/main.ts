@@ -53,7 +53,7 @@ function getSimulatorSettings(): SimulatorSettings {
   return {
     numberOfBoids: 200,
     backgroundOpacity: 0.1,
-    backgroundColor: '#222',
+    backgroundColor: '#222222',
     boid: {
       maxSpeed: boidMaxSpeed,
       maxForce: 1 * boidMaxSpeed,
