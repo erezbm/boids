@@ -1,5 +1,6 @@
 import Boid, { BoidSettings, BoidSettingsChanges } from './boid';
 import RectBorders from './borders';
+import Mouse from './mouse';
 import Rectangle from './rectangle';
 import { filterUndefinedProps } from './utils';
 
@@ -32,8 +33,8 @@ export default class Boids {
     }
   }
 
-  update(dt: number, borders: RectBorders) {
-    const netForces = this.#boids.map((boid) => boid.calcNetForce(dt, this.#boids, borders));
+  update(dt: number, borders: RectBorders, mouse: Mouse) {
+    const netForces = this.#boids.map((boid) => boid.calcNetForce(dt, this.#boids, borders, mouse));
     this.#boids.forEach((boid, i) => boid.update(netForces[i], dt));
   }
 

@@ -1,4 +1,5 @@
 import RectBorders from './borders';
+import Mouse from './mouse';
 import Rectangle from './rectangle';
 import { filterUndefinedProps, mapRange, toRadians } from './utils';
 import Vector from './vector';
@@ -30,6 +31,7 @@ export type BoidSettings = Readonly<{
   cohesionFactor: number,
   desiredSeparationDistance: number,
   desiredFlockSpeed: number,
+  mouseForceFactor: number,
   searchTargetReachRadius: number,
   maxSearchTime: number,
   appearance: AppearanceSetting,
@@ -73,8 +75,8 @@ export default class Boid {
     this.#settings = { ...this.#settings, ...filterUndefinedProps(changes) };
   }
 
-  calcNetForce(dt: number, boids: readonly Boid[], borders: RectBorders) {
-    const boidsInView = boids.filter((other) => other !== this && this.isInView(other));
+  calcNetForce(dt: number, boids: readonly Boid[], borders: RectBorders, mouse: Mouse) {
+    const boidsInView = boids.filter((other) => other !== this && this.isInView(other.#position, this.#settings.radius));
 
     const seesBoids = boidsInView.length >= 1;
     if (seesBoids) this.#currentSearch = null;
@@ -83,13 +85,16 @@ export default class Boid {
     if (boidsInView.length === 1 && this.isInStalemateWith(boidsInView[0])) {
       selfAppliedForce = selfAppliedForce.add(Vector.randomMag(this.#settings.maxForce));
     }
-    const externalAppliedForce = this.calcBordersForce(borders);
-    return selfAppliedForce.limitMag(this.#settings.maxForce).add(externalAppliedForce);
+    if (mouse.position !== null && mouse.isDown && this.isInView(mouse.position, 0)) {
+      selfAppliedForce = selfAppliedForce.add(this.calcFleeForce(mouse.position, dt));
+    }
+    const externalForce = this.calcBordersForce(borders);
+    return selfAppliedForce.limitMag(this.#settings.maxForce).add(externalForce);
   }
 
-  private isInView(other: Boid) {
-    if (!this.#position.distLTE(other.#position, 2 * this.#settings.radius + this.#settings.viewDistance)) return false;
-    const angle = other.#position.sub(this.#position).angle();
+  private isInView(otherPosition: Vector, otherRadius: number) {
+    if (!this.#position.distLTE(otherPosition, this.#settings.radius + this.#settings.viewDistance + otherRadius)) return false;
+    const angle = otherPosition.sub(this.#position).angle();
     const heading = this.#velocity.angle();
     let diffAngle = ((angle - heading) + Math.PI) % Math.PI;
     if (diffAngle > Math.PI) diffAngle -= 2 * Math.PI;
@@ -138,6 +143,12 @@ export default class Boid {
 
   private calcBordersForce(borders: RectBorders) {
     return borders.calcForce(this.#position, this.#settings.radius);
+  }
+
+  private calcFleeForce(position: Vector, dt: number) {
+    const f = this.#position.sub(position);
+    const distanceSquared = f.magSquared();
+    return f.withMag(this.#settings.mouseForceFactor / distanceSquared).div(dt);
   }
 
   private calcArriveForce(targetPosition: Vector, dt: number) {

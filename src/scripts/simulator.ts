@@ -78,7 +78,7 @@ export default class Simulator {
   }
 
   private update(dt: number) {
-    this.#boids.update(dt, this.#borders);
+    this.#boids.update(dt, this.#borders, this.#mouse);
   }
 
   private draw(context: CanvasRenderingContext2D) {

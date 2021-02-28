@@ -65,6 +65,7 @@ function getSimulatorSettings(): SimulatorSettings {
       cohesionFactor: 1,
       desiredFlockSpeed: boidMaxSpeed / 2,
       desiredSeparationDistance: boidRadius * 2,
+      mouseForceFactor: 1_000_000,
       searchTargetReachRadius: 15,
       maxSearchTime: 10,
       appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Rainbow } },
