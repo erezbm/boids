@@ -3,12 +3,12 @@ import Boids from './boids';
 import RectBorders, { RectBordersSettings, RectBordersSettingsChanges } from './borders';
 import { OmitSafe } from './utils';
 
-type MySettings = Readonly<{
+type MySettings = {
   backgroundOpacity: number,
   backgroundColor: string,
-}>;
+};
 
-type SimulatorSettingsT<T, U extends RectBordersSettings | RectBordersSettingsChanges> = MySettings & Readonly<{
+type SimulatorSettingsT<T, U extends RectBordersSettings | RectBordersSettingsChanges> = Readonly<MySettings> & Readonly<{
   numberOfBoids: number,
   boid: T,
   borders: OmitSafe<U, 'maxForce'>,
@@ -41,8 +41,8 @@ export default class Simulator {
   changeSettings(changes: SimulatorSettingsChanges) {
     const { numberOfBoids, backgroundOpacity, backgroundColor, boid, borders } = changes;
 
-    if (backgroundOpacity !== undefined) this.#mySettings = { ...this.#mySettings, backgroundOpacity };
-    if (backgroundColor !== undefined) this.#mySettings = { ...this.#mySettings, backgroundColor };
+    if (backgroundOpacity !== undefined) this.#mySettings.backgroundOpacity = backgroundOpacity;
+    if (backgroundColor !== undefined) this.#mySettings.backgroundColor = backgroundColor;
     if (boid !== undefined) {
       this.#boids.changeSettings(boid);
       if (boid.maxForce !== undefined) this.#borders.changeSettings({ maxForce: 2 * boid.maxForce });
