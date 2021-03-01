@@ -26,7 +26,7 @@ export class SidebarView implements ISidebarView {
     const toggleSettingsButton = document.getElementById('toggle-settings-btn') as HTMLButtonElement;
     MDCRipple.attachTo(toggleSettingsButton);
     const closeSettingsButton = document.getElementById('close-settings-btn') as HTMLButtonElement;
-    MDCRipple.attachTo(closeSettingsButton);
+    const closeSettingsButtonRipple = MDCRipple.attachTo(closeSettingsButton);
     const settingsDrawer = MDCDrawer.attachTo(document.getElementById('boids-settings-drawer')!);
 
     const numberOfBoidsTextField = MDCTextField.attachTo(document.getElementById('number-of-boids-text-field')!);
@@ -109,10 +109,18 @@ export class SidebarView implements ISidebarView {
     });
 
     document.body.addEventListener('MDCDrawer:opened', () => {
+      closeSettingsButtonRipple.layout();
       numberOfBoidsSlider.layout();
       backgroundOpacitySlider.layout();
       boidRadiusSlider.layout();
       boidMaxSpeedSlider.layout();
+    });
+
+    document.body.addEventListener('MDCDrawer:opened', () => {
+      toggleSettingsButton.blur();
+    });
+    document.body.addEventListener('MDCDrawer:closed', () => {
+      toggleSettingsButton.blur();
     });
   }
 
