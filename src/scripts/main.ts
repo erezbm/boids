@@ -3,9 +3,8 @@ import { AppearanceColorType, AppearanceType } from './boid';
 import { toRadians } from './utils';
 import { ISidebarView, SidebarView } from './views/sidebar';
 
-// TODO make boids flee from mouse
 // TODO add sidebar with:
-// - restart button
+// - start/stop switch
 // - reset to defaults button (possibly reset to default button on each input)
 // - inputs/checkboxes for the remaining settings
 // TODO getting initial settings from url parameters, and add copy url with settings button
@@ -75,7 +74,7 @@ function getSimulatorSettings(): SimulatorSettings {
       drawSearch: false,
     },
     borders: {
-      effectDistance: 50,
+      effectDistance: 150,
       drawEffectDistance: false,
     },
     mouse: {
