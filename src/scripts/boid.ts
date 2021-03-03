@@ -96,7 +96,7 @@ export default class Boid {
     if (!this.#position.distLTE(otherPosition, this.#settings.radius + this.#settings.viewDistance + otherRadius)) return false;
     const angle = otherPosition.sub(this.#position).angle();
     const heading = this.#velocity.angle();
-    let diffAngle = ((angle - heading) + Math.PI) % Math.PI;
+    let diffAngle = angle - heading;
     if (diffAngle > Math.PI) diffAngle -= 2 * Math.PI;
     if (diffAngle < -Math.PI) diffAngle += 2 * Math.PI;
     return -this.#settings.angleOfView / 2 <= diffAngle && diffAngle <= this.#settings.angleOfView / 2;
