@@ -34,12 +34,26 @@ sidebarView.onSettingsChanged((changes) => {
     };
   }
   if (changes.boid?.maxSpeed !== undefined) {
+    const boidMaxForce = 1 * changes.boid.maxSpeed;
     actualChanges = {
       ...actualChanges,
       boid: {
         ...actualChanges.boid,
-        maxForce: 1 * changes.boid.maxSpeed,
+        maxForce: boidMaxForce,
         desiredFlockSpeed: changes.boid.maxSpeed / 2,
+      },
+      borders: {
+        ...actualChanges.borders,
+        maxForce: 2 * boidMaxForce,
+      },
+    };
+  }
+  if (changes.boid?.maxForce !== undefined) {
+    actualChanges = {
+      ...actualChanges,
+      borders: {
+        ...actualChanges.borders,
+        maxForce: 2 * changes.boid.maxForce,
       },
     };
   }
@@ -48,6 +62,7 @@ sidebarView.onSettingsChanged((changes) => {
 
 function getSimulatorSettings(): SimulatorSettings {
   const boidMaxSpeed = 500;
+  const boidMaxForce = 1 * boidMaxSpeed;
   const boidRadius = 20;
   return {
     numberOfBoids: 200,
@@ -55,7 +70,7 @@ function getSimulatorSettings(): SimulatorSettings {
     backgroundColor: '#222222',
     boid: {
       maxSpeed: boidMaxSpeed,
-      maxForce: 1 * boidMaxSpeed,
+      maxForce: boidMaxForce,
       viewDistance: 100,
       angleOfView: toRadians(360),
       radius: boidRadius,
@@ -74,6 +89,7 @@ function getSimulatorSettings(): SimulatorSettings {
       drawSearch: false,
     },
     borders: {
+      maxForce: 2 * boidMaxForce,
       effectDistance: 150,
       drawEffectDistance: false,
     },

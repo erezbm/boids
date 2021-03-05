@@ -2,7 +2,6 @@ import { BoidSettings, BoidSettingsChanges } from './boid';
 import Boids from './boids';
 import RectBorders, { RectBordersSettings, RectBordersSettingsChanges } from './borders';
 import Mouse, { MouseSettings, MouseSettingsChanges } from './mouse';
-import { OmitSafe } from './utils';
 
 type MySettings = {
   backgroundOpacity: number,
@@ -12,7 +11,7 @@ type MySettings = {
 type SimulatorSettingsOrChanges<IsSettings extends boolean> = Readonly<MySettings> & Readonly<{
   numberOfBoids: number,
   boid: IsSettings extends true ? BoidSettings : BoidSettingsChanges,
-  borders: OmitSafe<IsSettings extends true ? RectBordersSettings : RectBordersSettingsChanges, 'maxForce'>,
+  borders: IsSettings extends true ? RectBordersSettings : RectBordersSettingsChanges,
   mouse: IsSettings extends true ? MouseSettings : MouseSettingsChanges,
 }>;
 
@@ -45,7 +44,6 @@ export default class Simulator {
     if (backgroundColor !== undefined) this.#mySettings.backgroundColor = backgroundColor;
     if (boid !== undefined) {
       this.#boids.changeSettings(boid);
-      if (boid.maxForce !== undefined) this.#borders.changeSettings({ maxForce: 2 * boid.maxForce });
       if (boid.appearance !== undefined) this.drawBackground(this.#context, 1);
     }
     if (borders !== undefined) this.#borders.changeSettings(borders);
