@@ -4,24 +4,26 @@ import { MDCSelect } from '@material/select';
 import { MDCSlider } from '@material/slider';
 import { MDCTextField } from '@material/textfield';
 import { MDCTopAppBar } from '@material/top-app-bar';
-import { AppearanceColorType, AppearanceType } from '../boid';
-import { SimulatorSettings, SimulatorSettingsChanges } from '../simulator';
+import { EventEmitter } from 'events';
+import type StrictEventEmitter from 'strict-event-emitter-types';
+import { AppearanceColorType, BoidsAppearanceType, SimulationSettings, SimulationSettingsChange } from '../simulation/simulation';
 import { isWebpSupported } from '../utils';
 import zaguriPngUrl from '/images/zaguri.png';
 import zaguriWebpUrl from '/images/zaguri.webp';
 
-export type SettingsChangedHandler = (changes: SimulatorSettingsChanges) => void;
-export interface ISidebarView {
-  onSettingsChanged(handler: SettingsChangedHandler): void;
-}
+type ISidebarViewEvents = {
+  'settingsChanged': (changes: SimulationSettingsChange) => void,
+};
+type ISidebarViewEventEmitter = StrictEventEmitter<EventEmitter, ISidebarViewEvents>;
+export interface ISidebarView extends ISidebarViewEventEmitter { }
 
 const zaguriImage = new Image();
 zaguriImage.src = isWebpSupported() ? zaguriWebpUrl : zaguriPngUrl;
 
-export class SidebarView implements ISidebarView {
-  #handler: SettingsChangedHandler = () => { };
+export class SidebarView extends (EventEmitter as unknown as new () => ISidebarViewEventEmitter) implements ISidebarView {
+  constructor({ worldSettings, drawSettings }: SimulationSettings) {
+    super();
 
-  constructor(settings: SimulatorSettings) {
     MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar')!);
     const toggleSettingsButton = document.getElementById('toggle-settings-btn') as HTMLButtonElement;
     MDCRipple.attachTo(toggleSettingsButton);
@@ -39,65 +41,71 @@ export class SidebarView implements ISidebarView {
     const appearanceTypeSelect = MDCSelect.attachTo(document.getElementById('appearance-type-select')!);
     const boidMaxSpeedSlider = MDCSlider.attachTo(document.getElementById('boid-max-speed-slider')!);
 
-    numberOfBoidsTextField.value = settings.numberOfBoids.toString();
-    numberOfBoidsSlider.setValue(Math.sqrt(settings.numberOfBoids));
-    backgroundOpacitySlider.setValue(settings.backgroundOpacity);
-    backgroundColorTextField.value = settings.backgroundColor;
-    backgroundColorInput.value = settings.backgroundColor;
-    backgroundColorInputWrapper.style.backgroundColor = settings.backgroundColor;
-    boidRadiusSlider.setValue(settings.boid.radius);
+    numberOfBoidsTextField.value = worldSettings.numberOfBoids.toString();
+    numberOfBoidsSlider.setValue(Math.sqrt(worldSettings.numberOfBoids));
+    backgroundOpacitySlider.setValue(drawSettings.backgroundOpacity);
+    backgroundColorTextField.value = drawSettings.backgroundColor;
+    backgroundColorInput.value = drawSettings.backgroundColor;
+    backgroundColorInputWrapper.style.backgroundColor = drawSettings.backgroundColor;
+    boidRadiusSlider.setValue(worldSettings.boidsRadius);
     appearanceTypeSelect.selectedIndex = 1;
-    boidMaxSpeedSlider.setValue(settings.boid.maxSpeed);
+    boidMaxSpeedSlider.setValue(worldSettings.boidsMaxSpeed);
 
     numberOfBoidsTextField.listen('input', () => {
       if (numberOfBoidsTextField.valid) {
         const n = Number(numberOfBoidsTextField.value);
         numberOfBoidsSlider.setValue(Math.sqrt(n));
-        this.#handler({ numberOfBoids: n });
+        this.emit('settingsChanged', { worldSettingsChange: { numberOfBoids: n } });
       }
     });
 
     numberOfBoidsSlider.listen('MDCSlider:input', () => {
       const n = Math.round(numberOfBoidsSlider.getValue() ** 2);
       numberOfBoidsTextField.value = n.toString();
-      this.#handler({ numberOfBoids: n });
+      this.emit('settingsChanged', { worldSettingsChange: { numberOfBoids: n } });
     });
 
     backgroundOpacitySlider.listen('MDCSlider:input', () => {
-      this.#handler({ backgroundOpacity: backgroundOpacitySlider.getValue() });
+      this.emit('settingsChanged', { drawSettingsChange: { backgroundOpacity: backgroundOpacitySlider.getValue() } });
     });
 
     backgroundColorTextField.listen('input', () => {
       const backgroundColor = backgroundColorTextField.value;
       backgroundColorInput.value = backgroundColor;
       backgroundColorInputWrapper.style.backgroundColor = backgroundColor;
-      this.#handler({ backgroundColor });
+      this.emit('settingsChanged', { drawSettingsChange: { backgroundColor } });
     });
 
     backgroundColorInput.addEventListener('input', () => {
       const backgroundColor = backgroundColorInput.value;
       backgroundColorTextField.value = backgroundColor;
       backgroundColorInputWrapper.style.backgroundColor = backgroundColor;
-      this.#handler({ backgroundColor });
+      this.emit('settingsChanged', { drawSettingsChange: { backgroundColor } });
     });
 
     boidRadiusSlider.listen('MDCSlider:input', () => {
-      this.#handler({ boid: { radius: boidRadiusSlider.getValue() } });
+      this.emit('settingsChanged', { worldSettingsChange: { boidsRadius: boidRadiusSlider.getValue() } });
     });
 
     appearanceTypeSelect.listen('MDCSelect:change', () => {
       const appearanceType = appearanceTypeSelect.value;
       if (appearanceType === 'image') {
-        this.#handler({ boid: { appearance: { type: AppearanceType.Image, image: zaguriImage } } });
+        this.emit('settingsChanged', {
+          drawSettingsChange: { boidsAppearance: { type: BoidsAppearanceType.Image, image: zaguriImage } },
+        });
       } else if (appearanceType === 'triangle') {
-        this.#handler({ boid: { appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Custom, value: '#0f0' } } } });
+        this.emit('settingsChanged', {
+          drawSettingsChange: { boidsAppearance: { type: BoidsAppearanceType.Triangle, color: { type: AppearanceColorType.Custom, value: '#0f0' } } },
+        });
       } else if (appearanceType === 'rainbow') {
-        this.#handler({ boid: { appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Rainbow } } } });
+        this.emit('settingsChanged', {
+          drawSettingsChange: { boidsAppearance: { type: BoidsAppearanceType.Triangle, color: { type: AppearanceColorType.Rainbow } } },
+        });
       }
     });
 
     boidMaxSpeedSlider.listen('MDCSlider:input', () => {
-      this.#handler({ boid: { maxSpeed: boidMaxSpeedSlider.getValue() } });
+      this.emit('settingsChanged', { worldSettingsChange: { boidsMaxSpeed: boidMaxSpeedSlider.getValue() } });
     });
 
     toggleSettingsButton.addEventListener('click', () => {
@@ -122,9 +130,5 @@ export class SidebarView implements ISidebarView {
     document.body.addEventListener('MDCDrawer:closed', () => {
       toggleSettingsButton.blur();
     });
-  }
-
-  onSettingsChanged(handler: SettingsChangedHandler) {
-    this.#handler = handler;
   }
 }

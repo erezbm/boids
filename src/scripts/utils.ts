@@ -4,11 +4,14 @@ export const toRadians = (degrees: number) => degrees * (Math.PI / 180);
 
 export const isWebpSupported = () => document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0;
 
-export type FilterUndefined<T> = {
-  [P in keyof T]: NonNullable<T[P]>
-};
-export const filterUndefinedProps = <T>(object: T) => (
-  Object.fromEntries(Object.entries(object).filter(([, value]) => value !== undefined)) as FilterUndefined<T>
+export const filterProps = <T, TResult = T>(object: T, predicate: (key: keyof T, value: T[keyof T]) => boolean) => (
+  Object.fromEntries(Object.entries(object).filter(([key, value]) => predicate(key as keyof T, value))) as TResult
 );
+
+export const filterInvalidKeys = <T, TKeys extends readonly (keyof T)[]>(change: T, validKeys: TKeys) => (
+  filterProps<T, Pick<T, TKeys[number]>>(change, (key) => validKeys.includes(key as keyof T))
+);
+
+export type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 
 export type OmitSafe<T, K extends keyof T> = Omit<T, K>;

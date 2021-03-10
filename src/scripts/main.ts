@@ -1,5 +1,5 @@
-import Simulator, { SimulatorSettings } from './simulator';
-import { AppearanceColorType, AppearanceType } from './boid';
+import CanvasAndDOMEventsSimulationView from './simulation/canvas-and-dom-events-simulation-view';
+import Simulation, { AppearanceColorType, BoidsAppearanceType, SimulationSettings } from './simulation/simulation';
 import { toRadians } from './utils';
 import { ISidebarView, SidebarView } from './views/sidebar';
 
@@ -16,86 +16,86 @@ new ResizeObserver(() => {
   [canvas.width, canvas.height] = [clientWidth, clientHeight];
 }).observe(document.documentElement);
 
-const visibleSpace = document.getElementById('visible-space')!;
-const settings = getSimulatorSettings();
-const simulator = new Simulator(canvas, visibleSpace, settings);
-simulator.start();
+const visibleSpaceEl = document.getElementById('visible-space')!;
+
+const settings = getSimulationSettings(visibleSpaceEl.clientWidth * visibleSpaceEl.clientHeight);
+const simulationView = new CanvasAndDOMEventsSimulationView(canvas, visibleSpaceEl);
+const simulation = new Simulation(simulationView, settings);
+simulation.start();
 
 const sidebarView: ISidebarView = new SidebarView(settings);
-sidebarView.onSettingsChanged((changes) => {
+sidebarView.on('settingsChanged', (changes) => {
   let actualChanges = changes;
-  if (changes.boid?.radius !== undefined) {
+  if (changes.worldSettingsChange?.boidsRadius !== undefined) {
     actualChanges = {
       ...actualChanges,
-      boid: {
-        ...actualChanges.boid,
-        desiredSeparationDistance: 2 * changes.boid.radius,
+      worldSettingsChange: {
+        ...actualChanges.worldSettingsChange,
+        boidsDesiredSeparationDistance: 2 * changes.worldSettingsChange.boidsRadius,
       },
     };
   }
-  if (changes.boid?.maxSpeed !== undefined) {
-    const boidMaxForce = 1 * changes.boid.maxSpeed;
+  if (changes.worldSettingsChange?.boidsMaxSpeed !== undefined) {
+    const boidsMaxForce = 1 * changes.worldSettingsChange.boidsMaxSpeed;
     actualChanges = {
       ...actualChanges,
-      boid: {
-        ...actualChanges.boid,
-        maxForce: boidMaxForce,
-        desiredFlockSpeed: changes.boid.maxSpeed / 2,
-      },
-      borders: {
-        ...actualChanges.borders,
-        maxForce: 2 * boidMaxForce,
+      worldSettingsChange: {
+        ...actualChanges.worldSettingsChange,
+        boidsMaxForce,
+        boidsDesiredFlockSpeed: changes.worldSettingsChange.boidsMaxSpeed / 2,
+        bordersMaxForce: 2 * boidsMaxForce,
       },
     };
   }
-  if (changes.boid?.maxForce !== undefined) {
+  if (changes.worldSettingsChange?.boidsMaxForce !== undefined) {
     actualChanges = {
       ...actualChanges,
-      borders: {
-        ...actualChanges.borders,
-        maxForce: 2 * changes.boid.maxForce,
+      worldSettingsChange: {
+        ...actualChanges.worldSettingsChange,
+        bordersMaxForce: 2 * changes.worldSettingsChange.boidsMaxForce,
       },
     };
   }
-  simulator.changeSettings(actualChanges);
+  simulation.changeSettings(actualChanges);
 });
 
-function getSimulatorSettings(): SimulatorSettings {
-  const boidMaxSpeed = 500;
-  const boidMaxForce = 1 * boidMaxSpeed;
-  const boidRadius = 20;
+function getSimulationSettings(visibleSpaceArea: number): SimulationSettings {
+  const boidsMaxSpeed = 500;
+  const boidsMaxForce = 1 * boidsMaxSpeed;
+  const boidsRadius = 20;
   return {
-    numberOfBoids: 200,
-    backgroundOpacity: 0.1,
-    backgroundColor: '#222222',
-    boid: {
-      maxSpeed: boidMaxSpeed,
-      maxForce: boidMaxForce,
-      viewDistance: 100,
-      angleOfView: toRadians(360),
-      radius: boidRadius,
-      separationFactor: 2,
-      alignmentFactor: 2,
-      cohesionFactor: 1,
-      desiredFlockSpeed: boidMaxSpeed / 2,
-      desiredSeparationDistance: boidRadius * 2,
-      mouseForceFactor: 1_000_000,
-      searchTargetReachRadius: 15,
-      maxSearchTime: 10,
-      appearance: { type: AppearanceType.Triangle, color: { type: AppearanceColorType.Rainbow } },
-      drawVelocity: false,
-      drawAcceleration: false,
-      drawFieldOfView: false,
-      drawSearch: false,
+    worldSettings: {
+      numberOfBoids: Math.min(Math.round(visibleSpaceArea / 80 ** 2), 500),
+      boidsMaxSpeed,
+      boidsMaxForce,
+      boidsViewDistance: 100,
+      boidsAngleOfView: toRadians(360),
+      boidsRadius,
+      boidsSeparationFactor: 2,
+      boidsAlignmentFactor: 2,
+      boidsCohesionFactor: 1,
+      boidsDesiredFlockSpeed: boidsMaxSpeed / 2,
+      boidsDesiredSeparationDistance: boidsRadius * 2,
+      boidsMouseAvoidanceForceFactor: 1_000_000,
+      boidsSearchTargetReachRadius: 15,
+      boidsMaxSearchTime: 10,
+      bordersMaxForce: 2 * boidsMaxForce,
+      bordersEffectDistance: 150,
     },
-    borders: {
-      maxForce: 2 * boidMaxForce,
-      effectDistance: 150,
-      drawEffectDistance: false,
-    },
-    mouse: {
-      color: 'orange',
-      radius: 10,
+    drawSettings: {
+      boidsAppearance: { type: BoidsAppearanceType.Triangle, color: { type: AppearanceColorType.Rainbow } },
+      drawBoidVelocity: false,
+      drawBoidAcceleration: false,
+      drawBoidFieldOfView: false,
+      drawBoidSearch: false,
+
+      drawUnaffectedBorderedSpace: false,
+
+      pointerColor: 'orange',
+      pointerRadius: 10,
+
+      backgroundOpacity: 0.1,
+      backgroundColor: '#222222',
     },
   };
 }
