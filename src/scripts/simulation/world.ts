@@ -1,9 +1,10 @@
 import Rectangle from '../rectangle';
+import vector from '../vector';
 import { BoidsSettings } from './boid';
 import Boids from './boids';
 import RectBorders, { BordersSettings } from './borders';
 import Pointer from './pointer';
-import { IReadonlyWorld, PointerChange } from './simulation';
+import { IReadonlyWorld } from './simulation';
 
 export type WorldSettings = BoidsSettings & BordersSettings;
 
@@ -31,14 +32,9 @@ export default class World implements IReadonlyWorld {
     this.#boids.update(dt, this);
   }
 
-  onVisibleSpaceChanged(visibleSpace: Rectangle) {
-    this.#borders.borderedSpace = visibleSpace;
-  }
-
-  onPointerChanged({ position, isDown }: PointerChange) {
-    if (position !== undefined) this.#pointer.position = position;
-    if (isDown !== undefined) this.#pointer.isDown = isDown;
-  }
+  setVisibleSpace(visibleSpace: Rectangle) { this.#borders.borderedSpace = visibleSpace; }
+  setPointerPosition(position: vector | null) { this.#pointer.position = position; }
+  setPointerIsDown(isDown: boolean) { this.#pointer.isDown = isDown; }
 
   changeSettings(change: WorldSettingsChange) {
     this.#boids.changeSettings(change);

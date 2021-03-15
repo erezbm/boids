@@ -15,8 +15,11 @@ export default class Simulation {
     this.#view = view;
     this.#drawSettings = { ...drawSettings };
 
-    this.#view.addListener('visibleSpaceChanged', this.#world.onVisibleSpaceChanged.bind(this.#world));
-    this.#view.addListener('pointerChanged', this.#world.onPointerChanged.bind(this.#world));
+    this.#view.addListener('visibleSpaceChanged', (v) => { this.#world.setVisibleSpace(v); });
+    this.#view.addListener('pointerChanged', ({ position, isDown }) => {
+      if (position !== undefined) this.#world.setPointerPosition(position);
+      if (isDown !== undefined) this.#world.setPointerIsDown(isDown);
+    });
   }
 
   #requestId: number | null = null;
