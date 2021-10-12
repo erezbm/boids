@@ -1,0 +1,29 @@
+{
+  "extends": [
+    "airbnb",
+    "airbnb/hooks",
+    "airbnb-typescript"
+  ],
+  "root": true,
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  },
+  "rules": {
+    "max-len": "off",
+    "no-plusplus": "off",
+    "no-nested-ternary": "off",
+    "object-curly-newline": "off",
+    "no-mixed-operators": "off",
+    "import/no-absolute-path": "off",
+    "import/no-cycle": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/lines-between-class-members": [
+      "error",
+      "always",
+      {
+        "exceptAfterSingleLine": true
+      }
+    ],
+    "react/jsx-one-expression-per-line": "off"
+  }
+}
